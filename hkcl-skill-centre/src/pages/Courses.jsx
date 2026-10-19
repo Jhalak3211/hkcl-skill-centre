@@ -6,6 +6,7 @@ import Container from '../components/Container.jsx';
 import Button from '../components/Button.jsx';
 import SectionHeading from '../components/SectionHeading.jsx';
 import CourseCard from '../components/CourseCard.jsx';
+import { FadeIn, FadeInStagger, FadeInItem } from '../components/MotionReveal.jsx';
 import { categories, courses } from '../data/courses.js';
 
 const cardVariantFor = (categoryId) => (categoryId === 'hcoc' ? 'compact' : 'default');
@@ -56,17 +57,19 @@ export default function Courses() {
 
       <section className="border-b border-brand-100 bg-brand-50">
         <Container className="py-12 sm:py-16">
-          <SectionHeading
-            as="h1"
-            size="lg"
-            title="Courses"
-            intro="Durations and fees are as listed by the centre. Where a detail is not published, the page says so. Please confirm current fees and batch timings before you enrol."
-          />
+          <FadeIn>
+            <SectionHeading
+              as="h1"
+              size="lg"
+              title="Courses"
+              intro="Durations and fees are as listed by the centre. Where a detail is not published, the page says so. Please confirm current fees and batch timings before you enrol."
+            />
+          </FadeIn>
         </Container>
       </section>
 
       <Container className="pt-8 sm:pt-10">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+        <FadeIn className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div role="group" aria-label="Filter by category" className="flex flex-wrap gap-2">
             {[{ id: 'all', label: 'All courses' }, ...categories].map((category) => {
               const selected = activeCategory === category.id;
@@ -76,9 +79,9 @@ export default function Courses() {
                   type="button"
                   aria-pressed={selected}
                   onClick={() => setCategory(category.id)}
-                  className={`min-h-11 rounded-full border px-4 text-sm font-medium transition-colors ${
+                  className={`min-h-11 rounded-full border px-4 text-sm font-medium transition-all duration-200 active:scale-95 ${
                     selected
-                      ? 'border-brand-800 bg-brand-800 text-white'
+                      ? 'border-brand-800 bg-brand-800 text-white shadow-xs'
                       : 'border-brand-200 bg-white text-brand-800 hover:border-brand-400 hover:bg-brand-50'
                   }`}
                 >
@@ -93,7 +96,7 @@ export default function Courses() {
               Search courses
             </label>
             <Search
-              className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-600"
+              className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-600 transition-colors"
               aria-hidden="true"
             />
             <input
@@ -102,44 +105,47 @@ export default function Courses() {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search courses, e.g. Excel"
-              className="min-h-11 w-full rounded-full border border-brand-200 bg-white pl-10 pr-4 text-base text-brand-950 placeholder:text-muted focus:border-brand-500"
+              className="min-h-11 w-full rounded-full border border-brand-200 bg-white pl-10 pr-4 text-base text-brand-950 placeholder:text-muted transition-all duration-200 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
             />
           </div>
-        </div>
+        </FadeIn>
 
         <p role="status" className="mt-6 text-sm text-muted">
           Showing {filtered.length} of {courses.length} courses
         </p>
 
         {groups.length === 0 ? (
-          <div className="mt-6 rounded-2xl border border-dashed border-brand-300 bg-brand-50 p-8 text-center">
+          <FadeIn className="mt-6 rounded-2xl border border-dashed border-brand-300 bg-brand-50 p-8 text-center">
             <h2 className="text-xl font-semibold text-brand-950">No courses match your search</h2>
             <p className="mt-2 text-muted">Try a shorter word, or clear the filters to see every course.</p>
             <Button variant="primary" className="mt-5" onClick={clearFilters}>
               Clear filters
             </Button>
-          </div>
+          </FadeIn>
         ) : (
           groups.map(({ category, items }) => (
             <section key={category.id} aria-labelledby={`group-${category.id}`} className="mt-8 first-of-type:mt-4">
-              <h2 id={`group-${category.id}`} className="text-2xl font-semibold text-brand-950">
-                {category.label}
-              </h2>
-              <p className="mt-1 text-muted">{category.description}</p>
-              <div
+              <FadeIn>
+                <h2 id={`group-${category.id}`} className="text-2xl font-semibold text-brand-950">
+                  {category.label}
+                </h2>
+                <p className="mt-1 text-muted">{category.description}</p>
+              </FadeIn>
+              <FadeInStagger
                 className={`mt-5 grid gap-5 sm:grid-cols-2 ${
                   cardVariantFor(category.id) === 'compact' ? 'lg:grid-cols-3 xl:grid-cols-4' : 'lg:grid-cols-3'
                 }`}
               >
                 {items.map((course) => (
-                  <CourseCard
-                    key={course.slug}
-                    course={course}
-                    variant={cardVariantFor(category.id)}
-                    showCategory={false}
-                  />
+                  <FadeInItem key={course.slug}>
+                    <CourseCard
+                      course={course}
+                      variant={cardVariantFor(category.id)}
+                      showCategory={false}
+                    />
+                  </FadeInItem>
                 ))}
-              </div>
+              </FadeInStagger>
             </section>
           ))
         )}

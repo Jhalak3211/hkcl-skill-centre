@@ -29,25 +29,33 @@ export default function CourseCard({ course, variant = 'default', headingLevel: 
   return (
     <article
       aria-labelledby={headingId}
-      className={`flex h-full flex-col rounded-2xl border bg-white transition-[border-color,box-shadow] duration-200 hover:shadow-md ${
+      className={`group relative flex h-full flex-col rounded-2xl border bg-white transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl hover:shadow-brand-900/8 focus-within:border-brand-400 focus-within:ring-2 focus-within:ring-brand-500/20 ${
         feature
           ? 'border-brand-200 p-6 hover:border-brand-400 sm:p-7'
           : 'border-brand-100 p-5 hover:border-brand-300'
       }`}
     >
+      {/* Top subtle brand gradient accent bar that reveals on hover */}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-brand-600 via-brand-400 to-accent-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        aria-hidden="true"
+      />
+
       {showCategory && (
-        <p className="mb-3 inline-flex w-fit rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-800">
+        <p className="mb-3 inline-flex w-fit rounded-full bg-brand-50 px-3 py-1 text-xs font-medium text-brand-800 transition-colors group-hover:bg-brand-100/70">
           {getCategoryLabel(course)}
         </p>
       )}
 
       <H
         id={headingId}
-        className={`font-semibold text-brand-950 ${feature ? 'text-3xl' : compact ? 'text-lg' : 'text-xl'}`}
+        className={`font-semibold text-brand-950 transition-colors duration-200 group-hover:text-brand-900 ${
+          feature ? 'text-3xl' : compact ? 'text-lg' : 'text-xl'
+        }`}
       >
         <Link
           to={`/courses/${course.slug}`}
-          className="rounded-sm hover:text-brand-700 hover:underline hover:decoration-brand-300 hover:underline-offset-4"
+          className="rounded-sm hover:text-brand-700 hover:underline hover:decoration-brand-300 hover:underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
         >
           {course.name}
         </Link>
@@ -101,7 +109,7 @@ export default function CourseCard({ course, variant = 'default', headingLevel: 
           <span className="sr-only"> for {course.name}</span>
         </Button>
         <Button {...enquiry} variant="primary" size="sm">
-          <MessageCircle className="h-4 w-4" aria-hidden="true" />
+          <MessageCircle className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" aria-hidden="true" />
           Enquire
           <span className="sr-only"> about {course.name}</span>
         </Button>

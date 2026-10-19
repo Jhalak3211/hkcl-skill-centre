@@ -10,16 +10,16 @@ export default function Brand({ onDark = false }) {
   return (
     <Link
       to="/"
-      className="flex min-h-11 items-center gap-3 rounded-lg"
+      className="group flex min-h-11 items-center gap-3 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
       aria-label={`${name}, home`}
     >
       {logo.src ? (
-        <img src={logo.src} alt={logo.alt} className="h-10 w-auto" />
+        <img src={logo.src} alt={logo.alt} className="h-10 w-auto transition-transform duration-300 group-hover:scale-105" />
       ) : (
         <span
           aria-hidden="true"
-          className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl font-display text-lg font-bold ${
-            onDark ? 'bg-white text-brand-900' : 'bg-brand-800 text-white'
+          className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl font-display text-lg font-bold shadow-xs transition-all duration-300 group-hover:scale-105 ${
+            onDark ? 'bg-white text-brand-900' : 'bg-brand-800 text-white group-hover:bg-brand-700'
           }`}
         >
           H

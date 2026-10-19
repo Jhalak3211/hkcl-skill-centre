@@ -1,5 +1,5 @@
-import { Route, Routes } from 'react-router-dom';
-import { MotionConfig } from 'framer-motion';
+import { Route, Routes, useLocation } from 'react-router-dom';
+import { motion, MotionConfig } from 'framer-motion';
 import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
 import ScrollToTop from './components/ScrollToTop.jsx';
@@ -12,6 +12,8 @@ import StudentLogin from './pages/StudentLogin.jsx';
 import NotFound from './pages/NotFound.jsx';
 
 export default function App() {
+  const location = useLocation();
+
   return (
     // reducedMotion="user": Framer Motion animations switch off automatically
     // for visitors who have "reduce motion" enabled in their system settings.
@@ -25,15 +27,22 @@ export default function App() {
       </a>
       <Navbar />
       <main id="main" tabIndex={-1} className="outline-none">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/courses" element={<Courses />} />
-          <Route path="/courses/:slug" element={<CourseDetails />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/student-login" element={<StudentLogin />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <motion.div
+          key={location.pathname}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <Routes location={location}>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/courses" element={<Courses />} />
+            <Route path="/courses/:slug" element={<CourseDetails />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/student-login" element={<StudentLogin />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </motion.div>
       </main>
       <Footer />
     </MotionConfig>

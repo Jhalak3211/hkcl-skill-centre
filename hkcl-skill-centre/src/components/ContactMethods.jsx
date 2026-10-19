@@ -1,5 +1,6 @@
 import { Clock, Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
 import { siteConfig } from '../data/siteConfig.js';
+import { FadeInStagger, FadeInItem } from './MotionReveal.jsx';
 import {
   getAddressLines,
   getMailtoHref,
@@ -9,12 +10,12 @@ import {
 } from '../utils/contact.js';
 
 const rowClass =
-  'flex min-h-14 items-start gap-4 rounded-2xl border border-brand-100 bg-white p-4 transition-colors';
-const linkRowClass = `${rowClass} hover:border-brand-300 hover:bg-brand-50`;
+  'group flex min-h-14 items-start gap-4 rounded-2xl border border-brand-100 bg-white p-4.5 transition-all duration-300 shadow-xs';
+const linkRowClass = `${rowClass} hover:-translate-y-0.5 hover:border-brand-300 hover:bg-brand-50/60 hover:shadow-md hover:shadow-brand-900/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500`;
 
 function IconBadge({ icon: Icon }) {
   return (
-    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand-100 text-brand-800">
+    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-brand-100 text-brand-800 transition-all duration-300 group-hover:scale-105 group-hover:bg-brand-700 group-hover:text-white">
       <Icon className="h-5 w-5" aria-hidden="true" />
     </span>
   );
@@ -33,9 +34,9 @@ export default function ContactMethods({ showHours = true }) {
   const addressLines = getAddressLines();
 
   return (
-    <ul className="space-y-3">
+    <FadeInStagger className="space-y-3" as="ul">
       {tel && (
-        <li>
+        <FadeInItem as="li">
           <a href={tel} className={linkRowClass}>
             <IconBadge icon={Phone} />
             <span>
@@ -43,11 +44,11 @@ export default function ContactMethods({ showHours = true }) {
               <span className="block font-semibold text-brand-950">{contact.phoneDisplay}</span>
             </span>
           </a>
-        </li>
+        </FadeInItem>
       )}
 
       {whatsapp && (
-        <li>
+        <FadeInItem as="li">
           <a href={whatsapp} target="_blank" rel="noopener noreferrer" className={linkRowClass}>
             <IconBadge icon={MessageCircle} />
             <span>
@@ -56,11 +57,11 @@ export default function ContactMethods({ showHours = true }) {
               <span className="sr-only"> (opens in a new tab)</span>
             </span>
           </a>
-        </li>
+        </FadeInItem>
       )}
 
       {mailto && (
-        <li>
+        <FadeInItem as="li">
           <a href={mailto} className={linkRowClass}>
             <IconBadge icon={Mail} />
             <span className="min-w-0">
@@ -68,11 +69,11 @@ export default function ContactMethods({ showHours = true }) {
               <span className="block break-all font-semibold text-brand-950">{contact.email}</span>
             </span>
           </a>
-        </li>
+        </FadeInItem>
       )}
 
       {addressLines.length > 0 && (
-        <li className={rowClass}>
+        <FadeInItem as="li" className={rowClass}>
           <IconBadge icon={MapPin} />
           <address className="not-italic">
             <span className="block text-sm text-muted">Visit</span>
@@ -88,18 +89,18 @@ export default function ContactMethods({ showHours = true }) {
                 href={maps}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-2 inline-flex min-h-11 items-center rounded-sm text-sm font-semibold text-brand-700 underline underline-offset-4 hover:text-brand-900"
+                className="mt-2 inline-flex min-h-11 items-center rounded-sm text-sm font-semibold text-brand-700 underline underline-offset-4 hover:text-brand-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
               >
                 Open in Google Maps
                 <span className="sr-only"> (opens in a new tab)</span>
               </a>
             )}
           </address>
-        </li>
+        </FadeInItem>
       )}
 
       {showHours && hours?.length > 0 && (
-        <li className={rowClass}>
+        <FadeInItem as="li" className={rowClass}>
           <IconBadge icon={Clock} />
           <div className="w-full">
             <p className="text-sm text-muted">Opening hours</p>
@@ -112,8 +113,8 @@ export default function ContactMethods({ showHours = true }) {
               ))}
             </dl>
           </div>
-        </li>
+        </FadeInItem>
       )}
-    </ul>
+    </FadeInStagger>
   );
 }

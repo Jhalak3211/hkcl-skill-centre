@@ -3,6 +3,7 @@ import { ArrowUpRight, ShieldAlert } from 'lucide-react';
 import Seo from '../components/Seo.jsx';
 import Container from '../components/Container.jsx';
 import Button from '../components/Button.jsx';
+import { FadeIn } from '../components/MotionReveal.jsx';
 import { siteConfig } from '../data/siteConfig.js';
 import { getStudentPortalUrl } from '../utils/contact.js';
 
@@ -31,7 +32,7 @@ export default function StudentLogin() {
     <>
       <Seo title="Student Login" path="/student-login" noindex />
       <Container className="py-16 sm:py-24">
-        <div className="mx-auto max-w-xl text-center">
+        <FadeIn className="mx-auto max-w-xl text-center">
           <h1 className="text-3xl font-semibold text-brand-950 sm:text-4xl">Student Login</h1>
 
           {portalUrl ? (
@@ -74,7 +75,7 @@ export default function StudentLogin() {
               and set <code>studentPortal.verified</code> to true before launch.
             </p>
           )}
-        </div>
+        </FadeIn>
       </Container>
     </>
   );

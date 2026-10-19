@@ -20,7 +20,7 @@ const programmeLinks = [
 ];
 
 const linkStyle =
-  'inline-flex min-h-11 items-center text-brand-100 transition-colors hover:text-white sm:min-h-9';
+  'group inline-flex min-h-11 items-center text-brand-200 transition-all duration-200 hover:text-white hover:translate-x-0.5 sm:min-h-9 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-400 rounded-sm';
 
 export default function Footer() {
   const { contact, social, studentPortal } = siteConfig;
