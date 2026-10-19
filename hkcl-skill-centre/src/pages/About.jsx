@@ -42,7 +42,7 @@ export default function About() {
         description={`About ${siteConfig.name} in ${siteConfig.locationName}: practical computer education, HS-CIT and HCOC courses, and typing training.`}
       />
 
-      <section className="border-b border-brand-100 bg-brand-50">
+      <section className="border-b border-brand-100/80 bg-white/60 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50">
         <Container className="py-12 sm:py-16">
           <FadeIn>
             <SectionHeading
@@ -59,7 +59,7 @@ export default function About() {
         <Container>
           <FadeIn className="grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:gap-14">
             <SectionHeading id="who-title" title="What the centre does" />
-            <div className="space-y-4 text-base text-muted sm:text-lg">
+            <div className="space-y-4 text-base text-muted dark:text-slate-300 sm:text-lg">
               <p>
                 {siteConfig.name} provides computer education and skill development training that gives students
                 practical digital knowledge. The centre runs computer courses, IT training, digital literacy and
@@ -83,12 +83,12 @@ export default function About() {
             {offerings.map((offering) => (
               <FadeInItem
                 key={offering.title}
-                className="group rounded-xl border-l-4 border-brand-300 bg-white p-5 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-brand-600 hover:shadow-md hover:shadow-brand-900/5"
+                className="group rounded-2xl border-l-4 border-l-brand-400 border border-brand-100/80 bg-white/75 p-6 shadow-xs backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-l-brand-600 hover:bg-white hover:shadow-lg hover:shadow-brand-900/5 dark:border-white/10 dark:border-l-blue-400 dark:bg-slate-900/60 dark:hover:border-l-blue-300 dark:hover:bg-slate-900/80 dark:hover:shadow-black/30"
               >
-                <dt className="font-display text-lg font-semibold text-brand-950 transition-colors group-hover:text-brand-900">
+                <dt className="font-display text-lg font-semibold text-brand-950 dark:text-white transition-colors group-hover:text-brand-900 dark:group-hover:text-blue-300">
                   {offering.title}
                 </dt>
-                <dd className="mt-2 text-sm leading-relaxed text-muted">{offering.text}</dd>
+                <dd className="mt-2 text-sm leading-relaxed text-muted dark:text-slate-300">{offering.text}</dd>
               </FadeInItem>
             ))}
           </FadeInStagger>
@@ -109,10 +109,10 @@ export default function About() {
                 title="Learning approach and facilities"
                 intro="As described by the centre."
               />
-              <ul className="mt-6 space-y-3 text-muted">
+              <ul className="mt-6 space-y-3 text-muted dark:text-slate-300">
                 {approach.map((point) => (
                   <li key={point} className="flex gap-3">
-                    <span aria-hidden="true" className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500" />
+                    <span aria-hidden="true" className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500 dark:bg-blue-400" />
                     <span>{point}</span>
                   </li>
                 ))}
@@ -123,12 +123,17 @@ export default function About() {
             <div className="grid gap-4 sm:grid-cols-2">
               {photos.length > 0
                 ? photos.map((image) => (
-                    <div key={image.src} className="group overflow-hidden rounded-2xl bg-brand-100">
+                    <div key={image.src} className="group overflow-hidden rounded-2xl bg-brand-100 dark:bg-slate-800 border border-brand-100/80 dark:border-white/10">
                       <img
                         src={image.src}
                         alt={image.alt}
                         loading="lazy"
                         className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        onError={(e) => {
+                          if (image.fallbackSrc && e.currentTarget.src !== image.fallbackSrc) {
+                            e.currentTarget.src = image.fallbackSrc;
+                          }
+                        }}
                       />
                     </div>
                   ))
@@ -143,7 +148,7 @@ export default function About() {
       <section aria-labelledby="visit-title" className="pt-14 sm:pt-16">
         <Container>
           <FadeIn>
-            <div className="rounded-[1.75rem] border border-brand-100 bg-brand-50/80 p-6 shadow-xs sm:p-10">
+            <div className="rounded-[1.75rem] border border-brand-100/90 bg-white/70 p-6 shadow-xs backdrop-blur-md dark:border-white/10 dark:bg-slate-900/60 dark:shadow-black/30 sm:p-10">
               <SectionHeading
                 id="visit-title"
                 title="Visit or call the centre"

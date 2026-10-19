@@ -29,6 +29,8 @@ export const siteConfig = {
   name: 'HKCL Skill Centre',
   locationName: 'Sirsa, Haryana',
   tagline: 'Computer and digital skills training in Sirsa',
+  /** Short memorable tagline shown in the hero section. Edit here to change it site-wide. */
+  heroTagline: 'Building Digital Skills. Shaping Brighter Futures.',
   description:
     'HKCL Skill Centre in Sirsa, Haryana offers HS-CIT computer courses, HCOC career-oriented certificate courses and typing training. View courses, fees and contact details.',
 
@@ -76,6 +78,11 @@ export const siteConfig = {
     facebook: 'https://www.facebook.com/share/14mYR96hFht/',
     instagram: 'https://www.instagram.com/hkclachariyainstitution',
     whatsappChannel: 'https://whatsapp.com/channel/0029VaMTqNI9RZAQAJluYW2x',
+  },
+
+  // Google Reviews: link to official Google Maps listing or review page
+  googleReviews: {
+    url: 'https://maps.google.com/?q=HKCL+Skill+Centre+Barnala+Road+Sirsa+Haryana',
   },
 
   // NOT SHOWN ON THE SITE. The existing profile describes the centre as

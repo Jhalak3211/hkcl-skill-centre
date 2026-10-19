@@ -55,7 +55,7 @@ export default function Courses() {
         description="Browse HS-CIT programmes, HCOC career-oriented certificate courses and typing courses at HKCL Skill Centre, Sirsa, with listed durations and fees."
       />
 
-      <section className="border-b border-brand-100 bg-brand-50">
+      <section className="border-b border-brand-100/80 bg-white/60 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50">
         <Container className="py-12 sm:py-16">
           <FadeIn>
             <SectionHeading
@@ -81,11 +81,14 @@ export default function Courses() {
                   onClick={() => setCategory(category.id)}
                   className={`min-h-11 rounded-full border px-4 text-sm font-medium transition-all duration-200 active:scale-95 ${
                     selected
-                      ? 'border-brand-800 bg-brand-800 text-white shadow-xs'
-                      : 'border-brand-200 bg-white text-brand-800 hover:border-brand-400 hover:bg-brand-50'
+                      ? 'border-brand-800 bg-brand-800 text-white shadow-xs dark:border-blue-500 dark:bg-blue-600 dark:text-white dark:shadow-blue-900/30'
+                      : 'border-brand-200/80 bg-white/80 text-brand-800 backdrop-blur-md hover:border-brand-400 hover:bg-brand-50 dark:border-white/10 dark:bg-slate-900/60 dark:text-slate-200 dark:hover:border-white/25 dark:hover:bg-slate-800/80'
                   }`}
                 >
-                  {category.label} <span className={selected ? 'text-brand-200' : 'text-muted'}>({countFor(category.id)})</span>
+                  {category.label}{' '}
+                  <span className={selected ? 'text-brand-200 dark:text-blue-200' : 'text-muted dark:text-slate-400'}>
+                    ({countFor(category.id)})
+                  </span>
                 </button>
               );
             })}
@@ -96,7 +99,7 @@ export default function Courses() {
               Search courses
             </label>
             <Search
-              className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-600 transition-colors"
+              className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-brand-600 dark:text-blue-400 transition-colors"
               aria-hidden="true"
             />
             <input
@@ -105,19 +108,19 @@ export default function Courses() {
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search courses, e.g. Excel"
-              className="min-h-11 w-full rounded-full border border-brand-200 bg-white pl-10 pr-4 text-base text-brand-950 placeholder:text-muted transition-all duration-200 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+              className="min-h-11 w-full rounded-full border border-brand-200/80 bg-white/80 pl-10 pr-4 text-base text-brand-950 placeholder:text-muted backdrop-blur-md transition-all duration-200 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20 dark:border-white/10 dark:bg-slate-900/70 dark:text-white dark:placeholder:text-slate-400 dark:focus:border-blue-400 dark:focus:ring-blue-500/30"
             />
           </div>
         </FadeIn>
 
-        <p role="status" className="mt-6 text-sm text-muted">
+        <p role="status" className="mt-6 text-sm text-muted dark:text-slate-400">
           Showing {filtered.length} of {courses.length} courses
         </p>
 
         {groups.length === 0 ? (
-          <FadeIn className="mt-6 rounded-2xl border border-dashed border-brand-300 bg-brand-50 p-8 text-center">
-            <h2 className="text-xl font-semibold text-brand-950">No courses match your search</h2>
-            <p className="mt-2 text-muted">Try a shorter word, or clear the filters to see every course.</p>
+          <FadeIn className="mt-6 rounded-2xl border border-dashed border-brand-300/80 bg-white/70 p-8 text-center backdrop-blur-md dark:border-white/20 dark:bg-slate-900/60">
+            <h2 className="text-xl font-semibold text-brand-950 dark:text-white">No courses match your search</h2>
+            <p className="mt-2 text-muted dark:text-slate-400">Try a shorter word, or clear the filters to see every course.</p>
             <Button variant="primary" className="mt-5" onClick={clearFilters}>
               Clear filters
             </Button>
@@ -126,10 +129,10 @@ export default function Courses() {
           groups.map(({ category, items }) => (
             <section key={category.id} aria-labelledby={`group-${category.id}`} className="mt-8 first-of-type:mt-4">
               <FadeIn>
-                <h2 id={`group-${category.id}`} className="text-2xl font-semibold text-brand-950">
+                <h2 id={`group-${category.id}`} className="text-2xl font-semibold text-brand-950 dark:text-white">
                   {category.label}
                 </h2>
-                <p className="mt-1 text-muted">{category.description}</p>
+                <p className="mt-1 text-muted dark:text-slate-400">{category.description}</p>
               </FadeIn>
               <FadeInStagger
                 className={`mt-5 grid gap-5 sm:grid-cols-2 ${

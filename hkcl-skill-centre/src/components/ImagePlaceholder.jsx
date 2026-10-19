@@ -9,12 +9,12 @@ export default function ImagePlaceholder({ label = 'Centre photograph', classNam
     <div
       role="img"
       aria-label={`${label}: placeholder, photograph to be added`}
-      className={`grid place-items-center rounded-2xl border border-dashed border-brand-300 bg-brand-50 p-6 text-center text-brand-700 ${className}`}
+      className={`grid place-items-center rounded-2xl border border-dashed border-brand-300 bg-brand-50 p-6 text-center text-brand-700 dark:border-white/20 dark:bg-slate-900/50 dark:text-slate-300 ${className}`}
     >
       <div>
         <Camera className="mx-auto h-7 w-7" aria-hidden="true" />
         <p className="mt-2 text-sm font-medium">{label}</p>
-        <p className="text-xs text-muted">Photograph to be added</p>
+        <p className="text-xs text-muted dark:text-slate-500">Photograph to be added</p>
       </div>
     </div>
   );
