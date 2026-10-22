@@ -27,7 +27,7 @@ export const STUDENT_PORTAL_URL = 'https://www.hkcl.in/';
 
 export const siteConfig = {
   name: 'HKCL Skill Centre',
-  locationName: 'Sirsa, Haryana',
+  locationName: 'Authorised Learning Center',
   tagline: 'Computer and digital skills training in Sirsa',
   /** Short memorable tagline shown in the hero section. Edit here to change it site-wide. */
   heroTagline: 'Building Digital Skills. Shaping Brighter Futures.',
@@ -69,7 +69,7 @@ export const siteConfig = {
   // Logo: leave `src` empty to use the text-based brand mark.
   // To use an image, put it in /public/images and set e.g. '/images/logo.png'.
   logo: {
-    src: '',
+    src: "/images/logo.png",
     alt: 'HKCL Skill Centre logo',
   },
 

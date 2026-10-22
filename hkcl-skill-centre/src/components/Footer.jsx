@@ -7,6 +7,8 @@ import { getAddressLines, getMailtoHref, getTelHref, getWhatsAppHref } from '../
 
 const quickLinks = [
   { to: '/', label: 'Home' },
+  { to: '/gallery', label: 'Gallery' },
+
   { to: '/about', label: 'About' },
   { to: '/courses', label: 'Courses' },
   { to: '/contact', label: 'Contact' },

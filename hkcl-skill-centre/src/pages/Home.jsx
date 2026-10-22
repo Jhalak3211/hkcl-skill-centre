@@ -99,7 +99,7 @@ export default function Home() {
         {/* Full-width automated background image slideshow with crossfade */}
         <HeroSlideshow />
 
-        {/* Ambient floating gradient orbs */}
+        {/* Ambient floating gradient orbs
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
           <motion.div
             className="absolute -left-20 -top-24 h-96 w-96 rounded-full bg-gradient-to-tr from-brand-300/35 via-brand-200/25 to-transparent blur-3xl dark:from-blue-600/20 dark:via-indigo-600/15"
@@ -111,87 +111,47 @@ export default function Home() {
             animate={{ x: [0, -20, 0], y: [0, 20, 0], scale: [1, 1.08, 1] }}
             transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
           />
-        </div>
+        </div> */}
 
-        <Container className="relative z-10 grid gap-12 py-16 sm:py-20 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-16 lg:py-28">
-          {/* Left: text content */}
-          <motion.div variants={heroGroup} initial="hidden" animate="show">
-            {/* Trust badge */}
-            <motion.div
-              variants={heroItem}
-              className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand-200/90 bg-white/80 px-3.5 py-1.5 text-xs font-semibold text-brand-900 shadow-xs backdrop-blur-md dark:border-white/15 dark:bg-slate-900/80 dark:text-slate-100 dark:shadow-black/20"
-            >
-              <span className="flex h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
-              <span>HKCL Authorised Learning Centre &bull; Sirsa</span>
-            </motion.div>
+        ```jsx
+<Container className="relative z-10 grid gap-12 py-16 sm:py-20 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:gap-16 lg:py-28">
+  {/* Left: text content */}
+  <motion.div variants={heroGroup} initial="hidden" animate="show">
 
-            {/* Main headline */}
-            <motion.h1
-              id="hero-title"
-              variants={heroItem}
-              className="text-4xl font-semibold tracking-tight text-brand-950 dark:text-white sm:text-5xl lg:text-[3.5rem] lg:leading-[1.1]"
-            >
-              Computer and digital skills training in Sirsa
-            </motion.h1>
+    {/* Trust badge
+    <motion.div
+      variants={heroItem}
+      className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/25 bg-slate-950/75 px-3.5 py-1.5 text-xs font-semibold text-white shadow-md backdrop-blur-md"
+    >
+      <span className="flex h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
+      <span>HKCL Authorised Learning Centre &bull; Sirsa</span>
+    </motion.div> */}
 
-            {/* Tagline — edit siteConfig.heroTagline to change */}
-            <motion.p
-              variants={heroItem}
-              className="mt-4 text-lg font-semibold text-brand-700 dark:text-blue-400 sm:text-xl"
-            >
-              {siteConfig.heroTagline}
-            </motion.p>
+    {/* Main headline */}
+    <motion.h1
+      id="hero-title"
+      variants={heroItem}
+      className="max-w-2xl text-4xl font-bold tracking-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] sm:text-5xl lg:text-[3.5rem] lg:leading-[1.1]"
+    >
+      Computer Education & AI Skill Training center
+    </motion.h1>
 
-            {/* Description */}
-            <motion.p
-              variants={heroItem}
-              className="mt-4 max-w-xl text-base leading-relaxed text-muted dark:text-slate-300 sm:text-lg"
-            >
-              HS-CIT programmes, HCOC career courses and typing training on Barnala Road.
-              HS-CIT and 120-hour HCOC courses carry HKCL and HSBTE certificates.
-            </motion.p>
+    {/* Tagline */}
+    <motion.p
+      variants={heroItem}
+      className="mt-4 text-lg font-semibold text-sky-300 drop-shadow-md sm:text-xl"
+    >
+      {siteConfig.heroTagline}
+    </motion.p>
 
-            {/* CTA buttons */}
-            <motion.div
-              variants={heroItem}
-              className="mt-8 flex flex-wrap gap-3"
-            >
-              <Button to="/courses" size="lg">
-                Explore courses
-              </Button>
-              <Button to="/contact" variant="secondary" size="lg">
-                Contact us
-              </Button>
-            </motion.div>
 
-            {/* Phone quick-link */}
-            {tel && (
-              <motion.p
-                variants={heroItem}
-                className="mt-6 flex items-center gap-2 text-sm text-muted dark:text-slate-300"
-              >
-                <Phone
-                  className="h-4 w-4 text-brand-600 dark:text-brand-400"
-                  aria-hidden="true"
-                />
-                <span>
-                  Prefer to talk?{' '}
-                  <a
-                    href={tel}
-                    className="rounded-sm font-semibold text-brand-800 underline underline-offset-4 hover:text-brand-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 dark:text-blue-300 dark:hover:text-white"
-                  >
-                    {siteConfig.contact.phoneDisplay}
-                  </a>
-                </span>
-              </motion.p>
-            )}
-          </motion.div>
+    {/* Keep your existing buttons and phone number below this point */}
 
-          {/* Right: animated H visual */}
-          <div className="flex justify-center lg:justify-end">
-            <HeroVisual />
-          </div>
-        </Container>
+  </motion.div>
+
+  {/* Keep your existing right-side content here, if any */}
+</Container>
+```
       </section>
 
       {/* ── INTRODUCTION ─────────────────────────────────────────────────── */}
@@ -217,8 +177,8 @@ export default function Home() {
         </Container>
       </section>
 
-      {/* ── HS-CIT DURATION CHART ─────────────────────────────────────────── */}
-      <section aria-labelledby="duration-title" className="pt-16 sm:pt-20">
+      
+      {/* <section aria-labelledby="duration-title" className="pt-16 sm:pt-20">
         <Container>
           <FadeIn>
             <SectionHeading
@@ -231,10 +191,10 @@ export default function Home() {
             <DurationChart />
           </FadeIn>
         </Container>
-      </section>
+      </section> */}
 
       {/* ── FEATURED COURSES ─────────────────────────────────────────────── */}
-      <section aria-labelledby="featured-title" className="pt-16 sm:pt-20">
+      {/* <section aria-labelledby="featured-title" className="pt-16 sm:pt-20">
         <Container>
           <FadeIn className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <SectionHeading
@@ -255,7 +215,7 @@ export default function Home() {
             ))}
           </FadeInStagger>
         </Container>
-      </section>
+      </section> */}
 
       {/* ── HCOC BAND ────────────────────────────────────────────────────── */}
       <section aria-labelledby="hcoc-title" className="pt-16 sm:pt-20">
@@ -293,7 +253,7 @@ export default function Home() {
       </section>
 
       {/* ── GALLERY ──────────────────────────────────────────────────────── */}
-      <Gallery />
+      {/* <Gallery /> */}
 
       {/* ── WHY CHOOSE ───────────────────────────────────────────────────── */}
       <section aria-labelledby="why-title" className="pt-16 sm:pt-20">

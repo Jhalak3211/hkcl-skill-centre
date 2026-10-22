@@ -26,8 +26,7 @@ export const getAddressText = () => getAddressLines().join(', ');
 
 /** Opens Google Maps with the address pre-filled. Returns null if no address. */
 export const getMapsHref = () => {
-  const text = getAddressText();
-  return text ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(text)}` : null;
+  return 'https://www.google.com/maps/place/HKCL+Skill+Centre/@29.5369842,75.0304069,13z/data=!4m6!3m5!1s0x3f00bef3bee1259:0xc37731455a293b23!8m2!3d29.5390876!4d75.0457041!16s%2Fg%2F11w9slnc_n?entry=ttu&g_ep=EgoyMDI2MTAxOS4wIKXMDSoASAFQAw%3D%3D'
 };
 
 /**

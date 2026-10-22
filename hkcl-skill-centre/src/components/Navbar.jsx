@@ -10,6 +10,7 @@ import ThemeToggle from './ThemeToggle.jsx';
 const navLinks = [
   { to: '/', label: 'Home', end: true },
   { to: '/about', label: 'About' },
+  { to: '/gallery', label: 'Gallery' },
   { to: '/courses', label: 'Courses' },
   { to: '/contact', label: 'Contact' },
 ];

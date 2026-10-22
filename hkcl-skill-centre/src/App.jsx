@@ -10,6 +10,7 @@ import Courses from './pages/Courses.jsx';
 import CourseDetails from './pages/CourseDetails.jsx';
 import Contact from './pages/Contact.jsx';
 import NotFound from './pages/NotFound.jsx';
+import Gallery from './components/Gallery.jsx';
 
 // StudentLogin page and route intentionally removed.
 // The student-login URL in siteConfig is linked from the Contact page instead.
@@ -40,6 +41,8 @@ export default function App() {
           <Routes location={location}>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
+            <Route path="/gallery" element={<Gallery />} />
+
             <Route path="/courses" element={<Courses />} />
             <Route path="/courses/:slug" element={<CourseDetails />} />
             <Route path="/contact" element={<Contact />} />

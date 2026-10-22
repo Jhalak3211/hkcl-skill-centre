@@ -36,10 +36,10 @@ export default function CourseCard({ course, variant = 'default', headingLevel: 
       }`}
     >
       {/* Top subtle brand gradient accent bar that reveals on hover */}
-      <div
+      {/* <div
         className="pointer-events-none absolute inset-x-0 top-0 h-1 rounded-t-2xl bg-gradient-to-r from-brand-600 via-brand-400 to-accent-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100 dark:from-brand-500 dark:via-cyan-400 dark:to-accent-400"
         aria-hidden="true"
-      />
+      /> */}
 
       {showCategory && (
         <p className="mb-3 inline-flex w-fit rounded-full bg-brand-50/90 px-3 py-1 text-xs font-medium text-brand-800 transition-colors group-hover:bg-brand-100/70 dark:border dark:border-white/10 dark:bg-white/10 dark:text-blue-300">
