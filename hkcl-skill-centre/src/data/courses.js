@@ -319,3 +319,120 @@ export const getFeaturedCourses = () => courses.filter((course) => course.featur
 
 export const getRelatedCourses = (course, limit = 3) =>
   courses.filter((c) => c.category === course.category && c.slug !== course.slug).slice(0, limit);
+
+
+export const displayGroups = [
+  {
+    id: 'hs-cit',
+    label: 'HS-CIT Programmes',
+    description: 'Structured computer education and digital skills programmes.',
+    courseSlugs: ['hs-cit', 'hs-cit-a', 'hs-cit-a-plus'],
+  },
+  {
+    id: 'accounting-office',
+    label: 'Accounting & Office Administration',
+    description: 'Accounting, spreadsheets, data entry and office administration.',
+    courseSlugs: [
+      'financial-accounting',
+      'advanced-accounting',
+      'advanced-excel',
+      'data-entry-and-data-management',
+      'office-assistance',
+    ],
+  },
+  {
+    id: 'data-analytics',
+    label: 'Data Analytics & Databases',
+    description: 'Data analysis, visualization and database fundamentals.',
+    courseSlugs: [
+      'data-analytics-and-visualization',
+      'dbms',
+    ],
+  },
+  {
+    id: 'design-media',
+    label: 'Graphic Design & Digital Media',
+    description: 'Graphic design, desktop publishing and media editing.',
+    courseSlugs: [
+      'dtp-adobe',
+      'dtp-corel-draw',
+      'graphic-designing',
+      'photo-editing',
+      'video-editing',
+    ],
+  },
+  {
+    id: 'web-development',
+    label: 'Web Design & Development',
+    description: 'Website design and web development technologies.',
+    courseSlugs: [
+      'web-designing',
+      'html-with-css',
+      'php',
+    ],
+  },
+  {
+    id: 'programming',
+    label: 'Programming & Software Development',
+    description: 'Programming languages and data structures.',
+    courseSlugs: [
+      'java',
+      'python',
+      'c-and-cpp-programming',
+      'c-sharp',
+      'data-structures-using-c-and-cpp',
+    ],
+  },
+  {
+    id: 'hardware-security',
+    label: 'Hardware, Networking & Cybersecurity',
+    description: 'Computer hardware, technical support, networking and security.',
+    courseSlugs: [
+      'cyber-security',
+      'desktop-support',
+      'it-hardware-support',
+      'network-support',
+    ],
+  },
+  {
+    id: 'emerging-tech',
+    label: 'AI & Emerging Technologies',
+    description: 'AI-ML, Internet of Things and introductory programming concepts.',
+    courseSlugs: [
+      'ai-ml',
+      'iot',
+      'scratch',
+    ],
+  },
+  {
+    id: 'business-management',
+    label: 'Business & Management',
+    description: 'Business-sector knowledge and retail management.',
+    courseSlugs: [
+      'bfsi',
+      'retail-management',
+    ],
+  },
+  {
+  id: 'design-media',
+  label: 'Design, Media & Technical Tools',
+  description: 'Graphic design, desktop publishing, media editing and technical drafting.',
+  courseSlugs: [
+    'dtp-adobe',
+    'dtp-corel-draw',
+    'graphic-designing',
+    'photo-editing',
+    'video-editing',
+    'autocad',
+  ],
+},
+  {
+    id: 'other',
+    label: 'Typing & Other Courses',
+    description: 'Additional courses listed by the centre.',
+    courseSlugs: [
+      'typing-skills',
+      'htse',
+    ],
+  },
+];

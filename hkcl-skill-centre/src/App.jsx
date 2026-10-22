@@ -10,7 +10,7 @@ import Courses from './pages/Courses.jsx';
 import CourseDetails from './pages/CourseDetails.jsx';
 import Contact from './pages/Contact.jsx';
 import NotFound from './pages/NotFound.jsx';
-import Gallery from './components/Gallery.jsx';
+import Gallery from './pages/Gallery.jsx';
 
 // StudentLogin page and route intentionally removed.
 // The student-login URL in siteConfig is linked from the Contact page instead.

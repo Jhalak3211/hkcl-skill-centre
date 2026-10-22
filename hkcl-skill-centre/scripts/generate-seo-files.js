@@ -15,7 +15,7 @@ if (base.includes('example.com')) {
   );
 }
 
-const paths = ['/', '/about', '/courses', '/contact', ...courses.map((c) => `/courses/${c.slug}`)];
+const paths = ['/', '/about', '/gallery', '/courses', '/contact', ...courses.map((c) => `/courses/${c.slug}`)];
 
 const sitemap =
   '<?xml version="1.0" encoding="UTF-8"?>\n' +

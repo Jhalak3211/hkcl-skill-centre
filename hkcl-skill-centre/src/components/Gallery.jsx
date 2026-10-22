@@ -78,9 +78,9 @@ export default function Gallery() {
                 type="button"
                 onClick={() => handleOpen(idx)}
                 aria-label={`View photo in lightbox: ${item.title || item.alt}`}
-                className="group relative block w-full overflow-hidden rounded-2xl border border-brand-100/90 bg-white/70 shadow-xs backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-brand-300 hover:shadow-lg hover:shadow-brand-900/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 dark:border-white/10 dark:bg-slate-900/60 dark:hover:border-white/25 dark:hover:shadow-black/40"
+                className="group relative block w-full overflow-hidden rounded-2xl border border-brand-100/90 bg-white/80 shadow-xs backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-brand-300 hover:shadow-lg hover:shadow-brand-900/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
               >
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-brand-100 dark:bg-slate-800">
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-brand-50">
                   <img
                     src={item.src}
                     alt={item.alt}
@@ -89,6 +89,8 @@ export default function Gallery() {
                     onError={(e) => {
                       if (item.fallbackSrc && e.currentTarget.src !== item.fallbackSrc) {
                         e.currentTarget.src = item.fallbackSrc;
+                      } else {
+                        e.currentTarget.style.display = 'none';
                       }
                     }}
                   />
@@ -96,7 +98,7 @@ export default function Gallery() {
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-brand-950/80 via-brand-950/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
                   {/* Zoom badge indicator */}
-                  <div className="pointer-events-none absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-brand-900 shadow-md opacity-0 backdrop-blur-md transition-all duration-300 group-hover:opacity-100 group-hover:scale-105 dark:bg-slate-900/90 dark:text-white">
+                  <div className="pointer-events-none absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-brand-900 shadow-md opacity-0 backdrop-blur-md transition-all duration-300 group-hover:opacity-100 group-hover:scale-105">
                     <ZoomIn className="h-4 w-4" aria-hidden="true" />
                   </div>
 
@@ -115,11 +117,11 @@ export default function Gallery() {
 
                 {/* Visible caption beneath image for clean scannability */}
                 <div className="p-4 text-left">
-                  <h3 className="font-display text-base font-semibold text-brand-950 dark:text-white transition-colors group-hover:text-brand-700 dark:group-hover:text-blue-300">
+                  <h3 className="font-display text-base font-semibold text-brand-950 transition-colors group-hover:text-brand-700">
                     {item.title}
                   </h3>
                   {item.caption && (
-                    <p className="mt-1 text-xs text-muted dark:text-slate-400 line-clamp-1">
+                    <p className="mt-1 text-xs text-slate-500 line-clamp-1">
                       {item.caption}
                     </p>
                   )}
@@ -194,6 +196,8 @@ export default function Gallery() {
                     onError={(e) => {
                       if (activeItem.fallbackSrc && e.currentTarget.src !== activeItem.fallbackSrc) {
                         e.currentTarget.src = activeItem.fallbackSrc;
+                      } else {
+                        e.currentTarget.style.display = 'none';
                       }
                     }}
                   />

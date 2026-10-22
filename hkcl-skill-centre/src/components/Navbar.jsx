@@ -1,174 +1,130 @@
-import { useEffect, useRef, useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
-import Brand from './Brand.jsx';
-import Container from './Container.jsx';
-import ThemeToggle from './ThemeToggle.jsx';
 
-/** Navigation links — Student Login intentionally removed. */
+import { useState, useEffect } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
+import { Menu, X } from 'lucide-react';
+import Brand from './Brand';
+
 const navLinks = [
   { to: '/', label: 'Home', end: true },
   { to: '/about', label: 'About' },
-  { to: '/gallery', label: 'Gallery' },
   { to: '/courses', label: 'Courses' },
+  { to: '/gallery', label: 'Gallery' },
   { to: '/contact', label: 'Contact' },
 ];
 
-const linkClass = ({ isActive }) =>
-  `relative inline-flex min-h-11 items-center rounded-full px-4 text-[0.95rem] font-medium transition-all duration-200 active:scale-[0.98] ${
-    isActive
-      ? 'bg-brand-100 text-brand-900 shadow-xs dark:bg-white/15 dark:text-white dark:shadow-white/5'
-      : 'text-brand-900/80 hover:bg-brand-50/80 hover:text-brand-950 dark:text-slate-200/80 dark:hover:bg-white/10 dark:hover:text-white'
-  }`;
-
-const mobileLinkClass = ({ isActive }) =>
-  `flex min-h-12 items-center rounded-xl px-4 text-base font-medium transition-colors ${
-    isActive
-      ? 'bg-brand-100 font-semibold text-brand-900 dark:bg-white/15 dark:text-white'
-      : 'text-brand-900 hover:bg-brand-50/80 dark:text-slate-200 dark:hover:bg-white/10'
-  }`;
-
-const mobileMenuVariants = {
-  hidden: { opacity: 0, height: 0 },
-  show: {
-    opacity: 1,
-    height: 'auto',
-    transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] },
-  },
-  exit: {
-    opacity: 0,
-    height: 0,
-    transition: { duration: 0.2, ease: 'easeOut' },
-  },
-};
-
-const mobileItemVariants = {
-  hidden: { opacity: 0, x: -12 },
-  show: {
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] },
-  },
-};
-
 export default function Navbar() {
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  const { pathname } = useLocation();
-  const toggleRef = useRef(null);
+  const location = useLocation();
 
-  // Monitor scroll position for dynamic glass navbar styling.
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 15);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Close the mobile menu whenever the route changes.
   useEffect(() => {
     setOpen(false);
-  }, [pathname]);
+  }, [location.pathname, location.search]);
 
-  // Close on Escape and restore focus to the menu button.
-  useEffect(() => {
-    if (!open) return undefined;
-    const onKeyDown = (event) => {
-      if (event.key === 'Escape') {
-        setOpen(false);
-        toggleRef.current?.focus();
-      }
-    };
-    document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
-  }, [open]);
+  const linkClass = ({ isActive }) =>
+    `inline-flex min-h-10 items-center justify-center whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors xl:px-4 ${
+      isActive
+        ? 'bg-brand-100 text-brand-900'
+        : 'text-slate-700 hover:bg-orange-50 hover:text-orange-600'
+    }`;
 
   return (
-    <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? 'border-b border-brand-200/80 bg-white/85 shadow-md shadow-brand-900/5 backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/85 dark:shadow-black/40'
-          : 'border-b border-brand-100/80 bg-white/70 backdrop-blur-md dark:border-white/5 dark:bg-slate-950/70'
-      }`}
-    >
-      <Container className="flex h-16 items-center justify-between gap-4 sm:h-[4.5rem]">
-        <Brand />
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white">
+      <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8">
+        {/* Main header */}
+        <div className="flex min-h-[88px] items-center justify-between gap-2 sm:min-h-[96px] sm:gap-4 lg:min-h-[100px]">
+          {/* Brand: logo, name and tagline */}
+          <div className="min-w-0 flex-1 lg:flex-none">
+            <Brand />
+          </div>
 
-        {/* Desktop nav */}
-        <nav aria-label="Main" className="hidden items-center gap-1.5 lg:flex">
-          {navLinks.map((link) => (
-            <NavLink key={link.to} to={link.to} end={link.end} className={linkClass}>
-              {link.label}
+          {/* Desktop navigation */}
+          <div className="hidden min-w-0 flex-1 items-center justify-end gap-3 lg:flex xl:gap-4">
+            <nav
+              aria-label="Main navigation"
+              className="flex items-center gap-1"
+            >
+              {navLinks.map((link) => (
+                <NavLink
+                  key={link.to}
+                  to={link.to}
+                  end={link.end}
+                  className={linkClass}
+                >
+                  {link.label}
+                </NavLink>
+              ))}
+            </nav>
+
+            <NavLink
+              to="/admission"
+              className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-orange-500 px-4 text-sm font-semibold text-white transition-colors hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2"
+            >
+              Apply for Admission
+              <span aria-hidden="true">→</span>
             </NavLink>
-          ))}
-          <ThemeToggle className="ml-3" />
-        </nav>
+          </div>
 
-        {/* Mobile: theme toggle + hamburger */}
-        <div className="flex items-center gap-2 lg:hidden">
-          <ThemeToggle size="sm" />
+          {/* Mobile menu button */}
           <button
-            ref={toggleRef}
             type="button"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-brand-200 bg-white/80 text-brand-900 transition-all duration-200 hover:border-brand-400 hover:bg-brand-50 active:scale-95 dark:border-white/15 dark:bg-slate-900/80 dark:text-white dark:hover:border-white/30 dark:hover:bg-slate-800"
+            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white text-brand-900 transition-colors hover:border-orange-300 hover:bg-orange-50 hover:text-orange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 lg:hidden"
             aria-expanded={open}
-            aria-controls="mobile-menu"
-            aria-label={open ? 'Close menu' : 'Open menu'}
-            onClick={() => setOpen((v) => !v)}
+            aria-controls="mobile-navbar-menu"
+            aria-label={open ? 'Close navigation menu' : 'Open navigation menu'}
+            onClick={() => setOpen((value) => !value)}
           >
             {open ? (
-              <X className="h-5 w-5 transition-transform duration-200 rotate-90" aria-hidden="true" />
+              <X className="h-5 w-5" aria-hidden="true" />
             ) : (
-              <Menu className="h-5 w-5 transition-transform duration-200" aria-hidden="true" />
+              <Menu className="h-5 w-5" aria-hidden="true" />
             )}
           </button>
         </div>
-      </Container>
 
-      {/* Mobile drawer */}
-      <AnimatePresence initial={false}>
-        {open && (
-          <motion.div
-            id="mobile-menu"
-            key="mobile-menu"
-            variants={mobileMenuVariants}
-            initial="hidden"
-            animate="show"
-            exit="exit"
-            className="overflow-hidden border-t border-brand-100/80 bg-white/95 backdrop-blur-2xl dark:border-white/10 dark:bg-slate-950/95 lg:hidden"
-          >
-            <Container as="nav" aria-label="Mobile" className="flex flex-col gap-1.5 py-4">
-              {navLinks.map((link, idx) => (
-                <motion.div
+        {/* Mobile navigation */}
+        <div
+          id="mobile-navbar-menu"
+          className={`grid transition-[grid-template-rows,opacity] duration-200 ease-in-out lg:hidden ${
+            open
+              ? 'grid-rows-[1fr] border-t border-slate-100 opacity-100'
+              : 'pointer-events-none grid-rows-[0fr] opacity-0'
+          }`}
+          aria-hidden={!open}
+          inert={!open}
+        >
+          <div className="overflow-hidden">
+            <nav
+              aria-label="Mobile navigation"
+              className="flex flex-col gap-1 py-3"
+            >
+              {navLinks.map((link) => (
+                <NavLink
                   key={link.to}
-                  variants={mobileItemVariants}
-                  transition={{ delay: idx * 0.04 }}
+                  to={link.to}
+                  end={link.end}
+                  className={({ isActive }) =>
+                    `flex min-h-11 items-center rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                      isActive
+                        ? 'bg-brand-100 text-brand-900'
+                        : 'text-slate-700 hover:bg-orange-50 hover:text-orange-600'
+                    }`
+                  }
                 >
-                  <NavLink
-                    to={link.to}
-                    end={link.end}
-                    className={mobileLinkClass}
-                    onClick={() => setOpen(false)}
-                  >
-                    {link.label}
-                  </NavLink>
-                </motion.div>
+                  {link.label}
+                </NavLink>
               ))}
 
-              {/* Theme toggle row */}
-              <motion.div
-                variants={mobileItemVariants}
-                transition={{ delay: navLinks.length * 0.04 }}
-                className="mt-2 flex items-center justify-between rounded-xl border border-brand-100/70 bg-brand-50/50 px-4 py-2.5 dark:border-white/10 dark:bg-white/5"
+              <NavLink
+                to="/admission"
+                className="mt-2 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-orange-500 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
               >
-                <span className="text-sm font-medium text-brand-950 dark:text-slate-200">Theme</span>
-                <ThemeToggle size="sm" />
-              </motion.div>
-            </Container>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                Apply for Admission
+                <span aria-hidden="true">→</span>
+              </NavLink>
+            </nav>
+          </div>
+        </div>
+      </div>
     </header>
   );
 }

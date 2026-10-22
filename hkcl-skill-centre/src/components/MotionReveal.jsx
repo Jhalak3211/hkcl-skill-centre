@@ -10,7 +10,7 @@ export function FadeIn({
   distance = 20,
   className = '',
   as = 'div',
-  viewport = { once: true, amount: 0.15 },
+  viewport = { once: true, amount: 0.05 },
   ...props
 }) {
   const Component = motion[as] || motion.div;
@@ -56,7 +56,7 @@ export function FadeInStagger({
   delayChildren = 0.05,
   className = '',
   as = 'div',
-  viewport = { once: true, amount: 0.1 },
+  viewport = { once: true, amount: 0.05 },
   ...props
 }) {
   const Component = motion[as] || motion.div;

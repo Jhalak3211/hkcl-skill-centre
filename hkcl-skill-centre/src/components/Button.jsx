@@ -5,11 +5,11 @@ const base =
 
 const variants = {
   primary:
-    'bg-brand-700 text-white shadow-xs hover:bg-brand-800 hover:shadow-md hover:shadow-brand-700/25 active:bg-brand-900 dark:bg-brand-600 dark:hover:bg-brand-500 dark:shadow-brand-500/20',
+    'bg-brand-700 text-white shadow-xs hover:bg-brand-800 hover:shadow-md hover:shadow-brand-700/25 active:bg-brand-900',
   accent:
-    'bg-accent-500 text-brand-950 shadow-xs hover:bg-accent-400 hover:shadow-md hover:shadow-accent-500/25 active:bg-accent-600 dark:bg-accent-400 dark:text-brand-950 dark:hover:bg-accent-300',
+    'bg-accent-500 text-brand-950 shadow-xs hover:bg-accent-400 hover:shadow-md hover:shadow-accent-500/25 active:bg-accent-600',
   secondary:
-    'border border-brand-200/90 bg-white/80 text-brand-800 hover:border-brand-400 hover:bg-white hover:shadow-xs active:bg-brand-100 backdrop-blur-xs dark:border-white/15 dark:bg-white/10 dark:text-slate-100 dark:hover:border-white/30 dark:hover:bg-white/15 dark:active:bg-white/20',
+    'border border-brand-200/90 bg-white/90 text-brand-800 hover:border-brand-400 hover:bg-white hover:shadow-xs active:bg-brand-100 backdrop-blur-xs',
   onDark:
     'bg-white text-brand-900 shadow-sm hover:bg-brand-50 hover:shadow-md hover:shadow-black/15 active:bg-brand-100',
   outlineOnDark:

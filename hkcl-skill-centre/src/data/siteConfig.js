@@ -27,7 +27,7 @@ export const STUDENT_PORTAL_URL = 'https://www.hkcl.in/';
 
 export const siteConfig = {
   name: 'HKCL Skill Centre',
-  locationName: 'Authorised Learning Center',
+  locationName: 'Sirsa,Haryana',
   tagline: 'Computer and digital skills training in Sirsa',
   /** Short memorable tagline shown in the hero section. Edit here to change it site-wide. */
   heroTagline: 'Building Digital Skills. Shaping Brighter Futures.',
@@ -42,9 +42,9 @@ export const siteConfig = {
     phoneDisplay: '+91 79889 19393',
     phoneE164: '+917988919393', // used for tel: links
     whatsappNumber: '917988919393', // digits only, with country code, no + sign
-    email: 'info@hkclsirsa.in',
+    email: 'achariyainstitute@gmail.com',
     address: {
-      lines: ['1st Floor, Opposite Lenskart', 'Back Side of RK Hotel Building', 'Barnala Road'],
+      lines: ['1st Floor, Opposite Lenskart', 'Back Side of Canara Bank', 'Barnala Road'],
       city: 'Sirsa',
       state: 'Haryana',
       postalCode: '125055',

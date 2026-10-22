@@ -6,8 +6,8 @@ import ImagePlaceholder from '../components/ImagePlaceholder.jsx';
 import { FadeIn, FadeInStagger, FadeInItem } from '../components/MotionReveal.jsx';
 import { galleryImages } from '../data/gallery.js';
 import { siteConfig } from '../data/siteConfig.js';
-
-// Only statements that appear on the centre's existing public profile.
+import { Monitor, GraduationCap, Award } from 'lucide-react';
+// Statements regarding centre offerings
 const offerings = [
   {
     title: 'HS-CIT programmes',
@@ -15,7 +15,7 @@ const offerings = [
   },
   {
     title: 'HCOC career-oriented courses',
-    text: 'HKCL\'s Career Oriented Course series, built to bridge college and careers through employability skills.',
+    text: "HKCL's Career Oriented Course series, built to bridge college and careers through employability skills.",
   },
   {
     title: 'Typing and short courses',
@@ -42,7 +42,7 @@ export default function About() {
         description={`About ${siteConfig.name} in ${siteConfig.locationName}: practical computer education, HS-CIT and HCOC courses, and typing training.`}
       />
 
-      <section className="border-b border-brand-100/80 bg-white/60 backdrop-blur-md dark:border-white/10 dark:bg-slate-900/50">
+      <section className="border-b border-brand-100/80 bg-white/70 backdrop-blur-md">
         <Container className="py-12 sm:py-16">
           <FadeIn>
             <SectionHeading
@@ -55,25 +55,110 @@ export default function About() {
         </Container>
       </section>
 
-      <section aria-labelledby="who-title" className="pt-14 sm:pt-16">
-        <Container>
-          <FadeIn className="grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:gap-14">
-            <SectionHeading id="who-title" title="What the centre does" />
-            <div className="space-y-4 text-base text-muted dark:text-slate-300 sm:text-lg">
-              <p>
-                {siteConfig.name} provides computer education and skill development training that gives students
-                practical digital knowledge. The centre runs computer courses, IT training, digital literacy and
-                career-oriented programmes designed to improve technical skills and employability.
-              </p>
-              <p>
-                Courses are linked to HKCL, and HS-CIT programmes and 120-hour HCOC courses carry certificates from HKCL
-                and the Haryana State Board of Technical Education.
+      
+{/* What the centre does */}
+<section
+  aria-labelledby="who-title"
+  className="pt-12 sm:pt-16"
+>
+  <Container>
+    <FadeIn className="grid items-start gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16">
+
+      {/* Left column: heading and feature highlights */}
+      <div>
+        <p className="mb-3 text-xs font-bold uppercase tracking-[0.14em] text-orange-600">
+          About our centre
+        </p>
+
+        <SectionHeading
+          id="who-title"
+          title="What the centre does"
+        />
+
+        <p className="mt-4 max-w-md text-base leading-7 text-slate-600">
+          Practical computer education and digital skills to help learners
+          build confidence in an increasingly digital world.
+        </p>
+
+        <div className="mt-6 grid grid-cols-2 gap-3">
+          <div className="flex items-start gap-3 rounded-xl border border-brand-100 bg-white/80 p-3 sm:p-4">
+            <Monitor
+              className="mt-0.5 h-5 w-5 shrink-0 text-orange-600"
+              aria-hidden="true"
+            />
+            <div>
+              <h3 className="text-sm font-semibold leading-5 text-brand-950">
+                Computer Education
+              </h3>
+              <p className="mt-1 text-xs leading-5 text-slate-600">
+                Computer courses and digital literacy.
               </p>
             </div>
-          </FadeIn>
-        </Container>
-      </section>
+          </div>
 
+          <div className="flex items-start gap-3 rounded-xl border border-brand-100 bg-white/80 p-3 sm:p-4">
+            <GraduationCap
+              className="mt-0.5 h-5 w-5 shrink-0 text-orange-600"
+              aria-hidden="true"
+            />
+            <div>
+              <h3 className="text-sm font-semibold leading-5 text-brand-950">
+                Skill Development
+              </h3>
+              <p className="mt-1 text-xs leading-5 text-slate-600">
+                Practical, career-oriented learning.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Right column: description and certification information */}
+      <div className="min-w-0 space-y-4">
+        <p className="text-base leading-7 text-slate-700">
+          {siteConfig.name} provides computer education and skill development
+          training that gives students practical digital knowledge. The centre
+          offers computer courses, IT training, digital literacy and
+          career-oriented programmes designed to develop technical skills and
+          support employability.
+        </p>
+
+        <p className="text-base leading-7 text-slate-700">
+          Courses are linked to HKCL. HS-CIT programmes and 120-hour HCOC
+          courses carry the certifications described by the centre and its
+          applicable course information.
+        </p>
+
+        <div className="rounded-xl border border-brand-100 bg-slate-50 p-4 sm:p-5">
+          <div className="flex items-start gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white text-orange-600 ring-1 ring-brand-100">
+              <Award className="h-5 w-5" aria-hidden="true" />
+            </div>
+
+            <div className="min-w-0">
+              <h3 className="text-sm font-semibold text-brand-950">
+                Courses and certification
+              </h3>
+
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                Explore HS-CIT and HCOC programmes to learn about their
+                course content, duration and applicable certification details.
+              </p>
+
+              <Button to="/courses" className="mt-3">
+                Explore courses
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </FadeIn>
+  </Container>
+</section>
+
+
+      {/* What you can study */}
       <section aria-labelledby="offer-title" className="pt-14 sm:pt-16">
         <Container>
           <FadeIn>
@@ -83,12 +168,12 @@ export default function About() {
             {offerings.map((offering) => (
               <FadeInItem
                 key={offering.title}
-                className="group rounded-2xl border-l-4 border-l-brand-400 border border-brand-100/80 bg-white/75 p-6 shadow-xs backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-l-brand-600 hover:bg-white hover:shadow-lg hover:shadow-brand-900/5 dark:border-white/10 dark:border-l-blue-400 dark:bg-slate-900/60 dark:hover:border-l-blue-300 dark:hover:bg-slate-900/80 dark:hover:shadow-black/30"
+                className="group rounded-2xl border-l-4 border-l-brand-600 border border-brand-100/80 bg-white/80 p-6 shadow-xs backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-l-brand-700 hover:bg-white hover:shadow-lg hover:shadow-brand-900/5"
               >
-                <dt className="font-display text-lg font-semibold text-brand-950 dark:text-white transition-colors group-hover:text-brand-900 dark:group-hover:text-blue-300">
+                <dt className="font-display text-lg font-semibold text-brand-950 transition-colors group-hover:text-brand-900">
                   {offering.title}
                 </dt>
-                <dd className="mt-2 text-sm leading-relaxed text-muted dark:text-slate-300">{offering.text}</dd>
+                <dd className="mt-2 text-sm leading-relaxed text-slate-600">{offering.text}</dd>
               </FadeInItem>
             ))}
           </FadeInStagger>
@@ -100,6 +185,7 @@ export default function About() {
         </Container>
       </section>
 
+      {/* Learning approach and facilities */}
       <section aria-labelledby="approach-title" className="pt-14 sm:pt-16">
         <Container>
           <FadeIn className="grid gap-8 lg:grid-cols-[1fr_1.1fr] lg:gap-14">
@@ -107,34 +193,47 @@ export default function About() {
               <SectionHeading
                 id="approach-title"
                 title="Learning approach and facilities"
-                intro="As described by the centre."
+                intro="Practical, career-focused learning environment."
               />
-              <ul className="mt-6 space-y-3 text-muted dark:text-slate-300">
+              <ul className="mt-6 space-y-3 text-slate-700">
                 {approach.map((point) => (
                   <li key={point} className="flex gap-3">
-                    <span aria-hidden="true" className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500 dark:bg-blue-400" />
+                    <span aria-hidden="true" className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-600" />
                     <span>{point}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* Replace these placeholders by adding photos in src/data/gallery.js */}
-            <div className="grid gap-4 sm:grid-cols-2">
+            {/* Centre photographs with clearly visible captions */}
+            <div className="grid gap-5 sm:grid-cols-2">
               {photos.length > 0
                 ? photos.map((image) => (
-                    <div key={image.src} className="group overflow-hidden rounded-2xl bg-brand-100 dark:bg-slate-800 border border-brand-100/80 dark:border-white/10">
-                      <img
-                        src={image.src}
-                        alt={image.alt}
-                        loading="lazy"
-                        className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        onError={(e) => {
-                          if (image.fallbackSrc && e.currentTarget.src !== image.fallbackSrc) {
-                            e.currentTarget.src = image.fallbackSrc;
-                          }
-                        }}
-                      />
+                    <div
+                      key={image.src}
+                      className="group overflow-hidden rounded-2xl border border-brand-100/90 bg-white/80 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-brand-300 hover:shadow-md"
+                    >
+                      <div className="aspect-[4/3] w-full overflow-hidden bg-brand-50">
+                        <img
+                          src={image.src}
+                          alt={image.alt}
+                          loading="lazy"
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      </div>
+                      <div className="p-4 text-left">
+                        <h3 className="font-semibold text-sm text-brand-950">
+                          {image.title}
+                        </h3>
+                        {image.caption && (
+                          <p className="mt-1 text-xs text-slate-500">
+                            {image.caption}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   ))
                 : ['Classroom photograph', 'Reception photograph'].map((label) => (
@@ -145,10 +244,11 @@ export default function About() {
         </Container>
       </section>
 
-      <section aria-labelledby="visit-title" className="pt-14 sm:pt-16">
+      {/* Visit or call the centre section - full visible padding */}
+      <section aria-labelledby="visit-title" className="py-14 sm:py-16 sm:pb-20">
         <Container>
           <FadeIn>
-            <div className="rounded-[1.75rem] border border-brand-100/90 bg-white/70 p-6 shadow-xs backdrop-blur-md dark:border-white/10 dark:bg-slate-900/60 dark:shadow-black/30 sm:p-10">
+            <div className="rounded-[1.75rem] border border-brand-100/90 bg-white/80 p-6 shadow-xs backdrop-blur-md sm:p-10">
               <SectionHeading
                 id="visit-title"
                 title="Visit or call the centre"

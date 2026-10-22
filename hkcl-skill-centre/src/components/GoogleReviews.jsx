@@ -5,15 +5,6 @@ import Button from './Button.jsx';
 import { FadeIn } from './MotionReveal.jsx';
 import { siteConfig } from '../data/siteConfig.js';
 
-/**
- * GoogleReviews
- * ---------------------------------------------------------------------------
- * Displays a genuine Google Reviews section for HKCL Skill Centre.
- * - Links to the centre's official Google Maps profile for live student reviews
- * - Matches the glassmorphic design system in light and dark modes
- * - Conforms strictly to requirements: no fabricated ratings or invented reviews
- * - Provides direct CTA for students to read reviews and write their own
- */
 export default function GoogleReviews() {
   const reviewsConfig = siteConfig.googleReviews || {
     url: 'https://maps.google.com/?q=HKCL+Skill+Centre+Barnala+Road+Sirsa+Haryana',
@@ -44,13 +35,13 @@ export default function GoogleReviews() {
         </FadeIn>
 
         <FadeIn delay={0.15}>
-          <div className="mt-8 rounded-3xl border border-brand-100/90 bg-white/70 p-6 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-slate-900/60 dark:shadow-black/40 sm:p-10">
+          <div className="mt-8 rounded-3xl border border-brand-100/90 bg-white/80 p-6 shadow-sm backdrop-blur-md sm:p-10">
             <div className="grid gap-8 lg:grid-cols-[1.2fr_1fr] lg:items-center lg:gap-12">
               {/* Left Column: Google Identity & CTA */}
               <div>
                 <div className="flex items-center gap-3">
                   {/* Google Multicolor 'G' Icon */}
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white shadow-xs dark:bg-slate-800">
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white shadow-xs border border-brand-100">
                     <svg viewBox="0 0 24 24" className="h-6 w-6" aria-hidden="true">
                       <path
                         fill="#4285F4"
@@ -71,10 +62,10 @@ export default function GoogleReviews() {
                     </svg>
                   </span>
                   <div>
-                    <h3 className="font-display text-xl font-bold text-brand-950 dark:text-white sm:text-2xl">
+                    <h3 className="font-display text-xl font-bold text-brand-950 sm:text-2xl">
                       Google Reviews
                     </h3>
-                    <p className="text-sm text-muted dark:text-slate-400">
+                    <p className="text-sm text-slate-500">
                       HKCL Skill Centre • Barnala Road, Sirsa
                     </p>
                   </div>
@@ -91,12 +82,12 @@ export default function GoogleReviews() {
                       />
                     ))}
                   </div>
-                  <span className="text-sm font-semibold text-brand-950 dark:text-white">
+                  <span className="text-sm font-semibold text-brand-950">
                     Verified Google Listing
                   </span>
                 </div>
 
-                <p className="mt-4 text-sm leading-relaxed text-muted dark:text-slate-300 sm:text-base">
+                <p className="mt-4 text-sm leading-relaxed text-slate-600 sm:text-base">
                   All reviews and ratings are hosted on our official Google Maps profile. We do not
                   publish mock or fabricated reviews — click below to view genuine student reviews directly
                   on Google.
@@ -120,33 +111,33 @@ export default function GoogleReviews() {
               </div>
 
               {/* Right Column: Google Maps & Transparency Card */}
-              <div className="rounded-2xl border border-brand-100/80 bg-brand-50/50 p-6 backdrop-blur-sm dark:border-white/10 dark:bg-white/5">
+              <div className="rounded-2xl border border-brand-100/80 bg-brand-50/60 p-6 backdrop-blur-sm">
                 <div className="flex items-start gap-3">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-100 text-brand-700 dark:bg-blue-600/20 dark:text-blue-300">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-100 text-brand-700">
                     <Star className="h-5 w-5 fill-amber-400 text-amber-400" aria-hidden="true" />
                   </span>
                   <div>
-                    <h4 className="font-semibold text-brand-950 dark:text-white">
+                    <h4 className="font-semibold text-brand-950">
                       Transparent Student Feedback
                     </h4>
-                    <p className="mt-1 text-xs text-muted dark:text-slate-300 sm:text-sm">
+                    <p className="mt-1 text-xs text-slate-600 sm:text-sm">
                       We believe in authentic public reviews. When you visit our Google listing, you can
                       read unfiltered experiences from learners who trained with us.
                     </p>
                   </div>
                 </div>
 
-                <div className="mt-6 border-t border-brand-200/60 pt-4 dark:border-white/10">
+                <div className="mt-6 border-t border-brand-200/60 pt-4">
                   <dl className="grid grid-cols-2 gap-4 text-center">
-                    <div className="rounded-xl bg-white/70 p-3 shadow-2xs dark:bg-slate-800/60">
-                      <dt className="text-xs text-muted dark:text-slate-400">Course Verification</dt>
-                      <dd className="mt-0.5 font-display text-base font-bold text-brand-950 dark:text-white">
+                    <div className="rounded-xl bg-white p-3 shadow-2xs border border-brand-100/60">
+                      <dt className="text-xs text-slate-500">Course Verification</dt>
+                      <dd className="mt-0.5 font-display text-base font-bold text-brand-950">
                         HKCL &amp; HSBTE
                       </dd>
                     </div>
-                    <div className="rounded-xl bg-white/70 p-3 shadow-2xs dark:bg-slate-800/60">
-                      <dt className="text-xs text-muted dark:text-slate-400">Review Platform</dt>
-                      <dd className="mt-0.5 font-display text-base font-bold text-brand-950 dark:text-white">
+                    <div className="rounded-xl bg-white p-3 shadow-2xs border border-brand-100/60">
+                      <dt className="text-xs text-slate-500">Review Platform</dt>
+                      <dd className="mt-0.5 font-display text-base font-bold text-brand-950">
                         Google Maps
                       </dd>
                     </div>
