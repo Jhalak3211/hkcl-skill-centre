@@ -94,7 +94,7 @@ export default function Footer() {
               <img
                 src="/images/hkcl-brand-logo.png"
                 alt={siteConfig.logo.alt || `${siteConfig.name} logo`}
-                className="h-20 w-auto sm:h-24 sm:w-auto shrink-0 rounded-2xl bg-white object-contain p-2 shadow-sm"
+                className="h-14 w-auto sm:h-16 sm:w-auto shrink-0 rounded-xl bg-white object-contain p-1.5 shadow-sm"
               />
 
               <span className="min-w-0">

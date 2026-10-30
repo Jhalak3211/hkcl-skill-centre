@@ -88,19 +88,19 @@ export default function Home() {
       {/* ── HERO SECTION ─────────────────────────────────────────────────── */}
       <section
         aria-labelledby="hero-title"
-        className="relative flex min-h-[560px] sm:min-h-[640px] items-center overflow-hidden border-b border-brand-100/80 bg-[var(--bg-page)]"
+        className="relative flex min-h-[460px] sm:min-h-[520px] lg:min-h-[560px] items-center overflow-hidden border-b border-brand-100/80 bg-[var(--bg-page)]"
       >
         {/* Full-bleed automated background image slideshow with light gradient overlay */}
         <HeroSlideshow />
 
-        <Container className="relative z-10 py-20 sm:py-24 lg:py-28 xl:py-32">
-          <div className="max-w-2xl lg:max-w-3xl xl:max-w-4xl">
+        <Container className="relative z-10 py-10 sm:py-14 lg:py-16 xl:py-20">
+          <div className="max-w-2xl lg:max-w-3xl">
             <motion.div variants={heroGroup} initial="hidden" animate="show">
               {/* Main headline */}
               <motion.h1
                 id="hero-title"
                 variants={heroItem}
-                className="text-4xl font-bold tracking-tight text-brand-950 sm:text-5xl lg:text-[3.25rem] xl:text-[3.75rem] lg:leading-[1.12]"
+                className="text-3xl font-bold tracking-tight text-brand-950 sm:text-4xl lg:text-5xl lg:leading-[1.15]"
               >
                 Computer Education &amp; AI Skill Training Centre
               </motion.h1>
@@ -108,7 +108,7 @@ export default function Home() {
               {/* Tagline */}
               <motion.p
                 variants={heroItem}
-                className="mt-4 text-lg font-semibold text-brand-700 sm:text-xl lg:text-2xl"
+                className="mt-3 text-base font-semibold text-brand-700 sm:text-lg lg:text-xl"
               >
                 {siteConfig.heroTagline}
               </motion.p>
@@ -116,7 +116,7 @@ export default function Home() {
               {/* Description */}
               <motion.p
                 variants={heroItem}
-                className="mt-4 max-w-2xl text-base leading-relaxed text-slate-700 sm:text-lg"
+                className="mt-3 max-w-xl text-sm leading-relaxed text-slate-700 sm:text-base"
               >
                 HS-CIT programmes, HCOC career courses and typing training on Barnala Road.
                 HS-CIT and 120-hour HCOC courses carry HKCL and HSBTE certificates.
@@ -125,12 +125,12 @@ export default function Home() {
               {/* CTA buttons */}
               <motion.div
                 variants={heroItem}
-                className="mt-8 flex flex-wrap items-center gap-3.5"
+                className="mt-6 flex flex-wrap items-center gap-3"
               >
-                <Button to="/courses" variant="primary" size="lg">
+                <Button to="/courses" variant="primary" size="md">
                   Explore courses
                 </Button>
-                <Button to="/contact" variant="secondary" size="lg">
+                <Button to="/contact" variant="secondary" size="md">
                   Contact us
                 </Button>
               </motion.div>
@@ -139,7 +139,7 @@ export default function Home() {
               {tel && (
                 <motion.p
                   variants={heroItem}
-                  className="mt-6 flex items-center gap-2 text-sm text-slate-700"
+                  className="mt-4 flex items-center gap-2 text-sm text-slate-700"
                 >
                   <Phone className="h-4 w-4 text-brand-600" aria-hidden="true" />
                   <span>

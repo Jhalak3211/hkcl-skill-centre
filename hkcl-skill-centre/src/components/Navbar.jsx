@@ -31,7 +31,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white">
       <Container className="px-3 sm:px-6 lg:px-8">
         {/* Main header */}
-        <div className="flex min-h-[96px] py-2.5 items-center justify-between gap-3 sm:min-h-[116px] sm:gap-4 lg:min-h-[132px] xl:min-h-[144px]">
+        <div className="flex min-h-[72px] py-2 items-center justify-between gap-3 sm:min-h-[80px] sm:gap-4 lg:min-h-[84px]">
           {/* Brand: logo, name and tagline */}
           <div className="min-w-0 flex-1 lg:flex-none">
             <Brand />
