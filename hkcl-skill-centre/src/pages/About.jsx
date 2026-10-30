@@ -211,25 +211,25 @@ export default function About() {
                 ? photos.map((image) => (
                     <div
                       key={image.src}
-                      className="group overflow-hidden rounded-2xl border border-brand-100/90 bg-white/80 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-brand-300 hover:shadow-md"
+                      className="group flex flex-col h-full overflow-hidden rounded-2xl border border-brand-100/90 bg-white shadow-xs backdrop-blur-md transition-all duration-300 hover:border-brand-300 hover:shadow-md"
                     >
-                      <div className="aspect-[4/3] w-full overflow-hidden bg-brand-50">
+                      <div className="aspect-[16/10] w-full overflow-hidden bg-brand-50">
                         <img
                           src={image.src}
                           alt={image.alt}
                           loading="lazy"
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                           onError={(e) => {
                             e.currentTarget.style.display = 'none';
                           }}
                         />
                       </div>
-                      <div className="p-4 text-left">
-                        <h3 className="font-semibold text-sm text-brand-950">
+                      <div className="flex flex-1 flex-col justify-start p-4 sm:p-5 text-left bg-white">
+                        <h3 className="font-semibold text-sm sm:text-base text-brand-950">
                           {image.title}
                         </h3>
                         {image.caption && (
-                          <p className="mt-1 text-xs text-slate-500">
+                          <p className="mt-1.5 text-xs sm:text-sm leading-relaxed text-slate-600">
                             {image.caption}
                           </p>
                         )}

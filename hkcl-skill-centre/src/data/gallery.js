@@ -9,31 +9,31 @@ export const heroSlides = [
   {
     id: "lab",
     src: "/images/hkcl-computer-lab-1.jpg",
-    title: "Computer Laboratory",
-    alt: "Computer laboratory at HKCL Skill Centre, Sirsa",
+    title: "Digital Learning Lab I",
+    alt: "Digital Learning Lab I at HKCL Skill Centre, Sirsa",
   },
   {
     id: "reception",
     src: "/images/hkcl-admissions-reception.jpg",
-    title: "Admissions & Reception",
-    alt: "Reception area at HKCL Skill Centre, Sirsa",
+    title: "Welcome & Information Centre",
+    alt: "Welcome & Information Centre at HKCL Skill Centre, Sirsa",
   },
   {
     id: "classroom",
     src: "/images/hkcl-computer-lab-2.jpg",
-    title: "Smart Classrooms",
-    alt: "Students working in the computer lab",
+    title: "Advanced Computer Training Lab",
+    alt: "Advanced Computer Training Lab at HKCL Skill Centre, Sirsa",
   },
   {
     id: "director",
     src: "/images/hkcl-counselling-office.jpg",
-    title: "Centre Facilities",
-    alt: "Facilities at HKCL Skill Centre, Sirsa",
+    title: "Student Services & Counselling",
+    alt: "Student Services & Counselling at HKCL Skill Centre, Sirsa",
   },
   {
     id: "facility",
     src: "/images/hkcl-centre-entrance.jpg",
-    title: "Our Centre",
+    title: "HKCL Skill Centre Frontage",
     alt: "Entrance of HKCL Skill Centre, Sirsa",
   },
 ];
@@ -41,60 +41,60 @@ export const heroSlides = [
 /**
  * GALLERY IMAGES & CAPTIONS
  * ---------------------------------------------------------------------------
- * Photos shown in the Gallery section on the homepage and the About page.
+ * Official photographs of HKCL Skill Centre facilities and learning community.
  * Clicking any photo opens the interactive Lightbox modal.
  */
 
 export const galleryImages = [
   {
-    id: "lab-1",
+    id: "digital-learning-lab-1",
     src: "/images/hkcl-computer-lab-1.jpg",
-    title: "Computer Laboratory 1",
-    caption: "Our computer lab and student workstations",
-    alt: "Computer laboratory at HKCL Skill Centre",
+    title: "Digital Learning Lab I",
+    caption: "Modern computer facilities for practical learning and digital skill development.",
+    alt: "Digital Learning Lab I at HKCL Skill Centre, Sirsa",
   },
   {
-    id: "reception-1",
-    src: "/images/hkcl-counselling-office.jpg",
-    title: "Reception & Enquiry",
-    caption: "Welcome desk and student enquiry area",
-    alt: "Reception area at HKCL Skill Centre",
-  },
-  {
-    id: "reception-2",
+    id: "welcome-information-centre",
     src: "/images/hkcl-admissions-reception.jpg",
-    title: "Student Support",
-    caption: "Reception and student counselling facilities",
-    alt: "Student support area at HKCL Skill Centre",
+    title: "Welcome & Information Centre",
+    caption: "Your first point of contact for admissions, enquiries and student assistance.",
+    alt: "Welcome & Information Centre at HKCL Skill Centre, Sirsa",
   },
   {
-    id: "staff-students",
+    id: "student-services-counselling",
+    src: "/images/hkcl-counselling-office.jpg",
+    title: "Student Services & Counselling",
+    caption: "Dedicated assistance and guidance for students throughout their learning journey.",
+    alt: "Student Services & Counselling at HKCL Skill Centre, Sirsa",
+  },
+  {
+    id: "our-learning-community",
     src: "/images/hkcl-faculty-and-students.jpg",
-    title: "Staff & Students",
-    caption: "Our learning community",
-    alt: "Staff and students at HKCL Skill Centre",
+    title: "Our Learning Community",
+    caption: "A glimpse of our faculty, staff and students working together.",
+    alt: "Our Learning Community at HKCL Skill Centre, Sirsa",
   },
   {
-    id: "student-lab",
+    id: "advanced-computer-training-lab",
     src: "/images/hkcl-computer-lab-2.jpg",
-    title: "Computer Laboratory 2",
-    caption: "Hands-on computer training",
-    alt: "Students learning in the computer lab",
+    title: "Advanced Computer Training Lab",
+    caption: "Hands-on training in computing applications and emerging technologies.",
+    alt: "Advanced Computer Training Lab at HKCL Skill Centre, Sirsa",
   },
   {
-    id: "campus-technology",
+    id: "technology-innovation-hub",
     src: "/images/hkcl-smart-classroom.jpg",
-    title: "Modern Technologies",
-    caption: "Explore our training centre",
-    alt: "HKCL Skill Centre campus",
+    title: "Technology & Innovation Hub",
+    caption: "Exploring modern digital tools, AI technologies and practical applications.",
+    alt: "Technology & Innovation Hub at HKCL Skill Centre, Sirsa",
   },
 ];
 
 /**
- * Gallery section metadata shown on the homepage.
+ * Gallery section metadata shown on the gallery page.
  */
 export const gallerySectionMeta = {
-  title: 'Explore Our Campus',
+  title: 'Campus & Facilities Gallery',
   subtitle:
     'Take a look inside our air-conditioned computer laboratories, interactive smart classrooms, and modern learning facilities on Barnala Road, Sirsa.',
 };

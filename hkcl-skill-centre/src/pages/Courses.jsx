@@ -54,11 +54,7 @@ export default function Courses() {
     ? requestedCategory
     : 'all';
 
-  const activeGroup = displayGroups.some(
-    (group) => group.id === requestedGroup,
-  )
-    ? requestedGroup
-    : null;
+  const activeGroup = displayGroups.find((group) => group.id === requestedGroup) || null;
 
   const hasSearch = query.trim().length > 0;
 

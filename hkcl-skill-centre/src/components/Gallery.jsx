@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, X, ZoomIn } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X, ZoomIn, Eye } from 'lucide-react';
 import { FadeIn, FadeInStagger, FadeInItem } from './MotionReveal.jsx';
 import SectionHeading from './SectionHeading.jsx';
 import Container from './Container.jsx';
@@ -57,7 +57,7 @@ export default function Gallery() {
   const activeItem = isOpen ? items[selectedIndex] : null;
 
   return (
-    <section aria-labelledby="gallery-title" className="pt-16 sm:pt-20">
+    <section aria-labelledby="gallery-title" className="pt-12 sm:pt-16 lg:pt-20">
       <Container>
         <FadeIn>
           <SectionHeading
@@ -67,64 +67,63 @@ export default function Gallery() {
           />
         </FadeIn>
 
-        {/* Responsive Gallery Grid: 1 col on <420px, 2 cols on mobile/tablet, 3 cols on desktop */}
+        {/* Responsive Gallery Grid: 1 col on mobile, 2 cols on tablet, 3 cols on desktop */}
         <FadeInStagger
-          className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-5 lg:grid-cols-3"
+          className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 md:gap-6 lg:grid-cols-3"
           as="ul"
         >
           {items.map((item, idx) => (
-            <FadeInItem key={item.id || item.src || idx} as="li">
+            <FadeInItem key={item.id || item.src || idx} as="li" className="h-full">
               <button
                 type="button"
                 onClick={() => handleOpen(idx)}
-                aria-label={`View photo in lightbox: ${item.title || item.alt}`}
-                className="group relative block w-full overflow-hidden rounded-2xl border border-brand-100/90 bg-white/80 shadow-xs backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-brand-300 hover:shadow-lg hover:shadow-brand-900/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+                aria-label={`View photo in lightbox: ${item.title}`}
+                className="group relative flex h-full w-full flex-col overflow-hidden rounded-2xl border border-brand-100/90 bg-white shadow-xs backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:border-brand-300 hover:shadow-xl hover:shadow-brand-900/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
               >
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-brand-50">
+                {/* Image Container with Consistent Aspect Ratio */}
+                <div className="relative aspect-[16/10] w-full overflow-hidden bg-brand-50">
                   <img
                     src={item.src}
-                    alt={item.alt}
+                    alt={item.alt || item.title}
                     loading={idx < 2 ? 'eager' : 'lazy'}
-                    className="h-full w-full object-cover object-center transition-transform duration-500 will-change-transform group-hover:scale-105"
+                    className="h-full w-full object-cover object-center transition-transform duration-500 ease-out will-change-transform group-hover:scale-105"
                     onError={(e) => {
-                      if (item.fallbackSrc && e.currentTarget.src !== item.fallbackSrc) {
-                        e.currentTarget.src = item.fallbackSrc;
-                      } else {
-                        e.currentTarget.style.display = 'none';
-                      }
+                      e.currentTarget.style.display = 'none';
                     }}
                   />
-                  {/* Subtle hover gradient overlay */}
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-brand-950/80 via-brand-950/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-                  {/* Zoom badge indicator */}
-                  <div className="pointer-events-none absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-brand-900 shadow-md opacity-0 backdrop-blur-md transition-all duration-300 group-hover:opacity-100 group-hover:scale-105">
-                    <ZoomIn className="h-4 w-4" aria-hidden="true" />
+                  {/* Dark gradient overlay on hover for high contrast */}
+                  <div
+                    className="pointer-events-none absolute inset-0 bg-gradient-to-t from-brand-950/85 via-brand-950/25 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                    aria-hidden="true"
+                  />
+
+                  {/* Zoom Badge Indicator */}
+                  <div
+                    className="pointer-events-none absolute right-3.5 top-3.5 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-brand-900 shadow-md backdrop-blur-md opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:scale-105"
+                    aria-hidden="true"
+                  >
+                    <ZoomIn className="h-4 w-4" />
                   </div>
 
-                  {/* Caption badge overlay */}
-                  <div className="pointer-events-none absolute bottom-0 left-0 right-0 p-4 text-left translate-y-2 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                    <p className="font-display text-sm font-semibold text-white drop-shadow-sm">
-                      {item.title}
-                    </p>
-                    {item.caption && (
-                      <p className="mt-0.5 text-xs text-slate-200 line-clamp-1 drop-shadow-xs">
-                        {item.caption}
-                      </p>
-                    )}
+                  {/* Hover Pill Indicator */}
+                  <div
+                    className="pointer-events-none absolute bottom-3 left-3 flex items-center gap-1.5 rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-brand-950 shadow-sm opacity-0 backdrop-blur-md transition-all duration-300 group-hover:opacity-100"
+                    aria-hidden="true"
+                  >
+                    <Eye className="h-3.5 w-3.5 text-brand-700" />
+                    <span>View photo</span>
                   </div>
                 </div>
 
-                {/* Visible caption beneath image for clean scannability */}
-                <div className="p-4 text-left">
-                  <h3 className="font-display text-base font-semibold text-brand-950 transition-colors group-hover:text-brand-700">
+                {/* Typography Container with Clear Hierarchy & Internal Padding */}
+                <div className="flex flex-1 flex-col justify-start p-5 text-left bg-white sm:p-6">
+                  <h3 className="font-display text-base font-bold leading-snug text-brand-950 transition-colors group-hover:text-brand-700 sm:text-lg">
                     {item.title}
                   </h3>
-                  {item.caption && (
-                    <p className="mt-1 text-xs text-slate-500 line-clamp-1">
-                      {item.caption}
-                    </p>
-                  )}
+                  <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-600">
+                    {item.caption}
+                  </p>
                 </div>
               </button>
             </FadeInItem>
@@ -138,8 +137,8 @@ export default function Gallery() {
           <div
             role="dialog"
             aria-modal="true"
-            aria-label={`Photo viewer: ${activeItem.title || activeItem.alt}`}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+            aria-label={`Photo viewer: ${activeItem.title}`}
+            className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6"
           >
             {/* Backdrop */}
             <motion.div
@@ -148,21 +147,21 @@ export default function Gallery() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
               onClick={handleClose}
-              className="absolute inset-0 bg-slate-950/85 backdrop-blur-xl"
+              className="absolute inset-0 bg-slate-950/90 backdrop-blur-xl"
               aria-hidden="true"
             />
 
             {/* Modal Dialog Content */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
+              exit={{ opacity: 0, scale: 0.96 }}
               transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              className="relative z-10 flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl border border-white/15 bg-slate-900/90 shadow-2xl backdrop-blur-2xl"
+              className="relative z-10 flex max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl border border-white/15 bg-slate-900 shadow-2xl backdrop-blur-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header bar: title, counter, close button */}
-              <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
+              <div className="flex items-center justify-between border-b border-white/10 px-5 py-4 sm:px-6">
                 <div>
                   <h3 className="font-display text-base font-semibold text-white sm:text-lg">
                     {activeItem.title}
@@ -182,24 +181,17 @@ export default function Gallery() {
               </div>
 
               {/* Main image container */}
-              <div className="relative flex aspect-[16/10] sm:aspect-[16/9] w-full items-center justify-center overflow-hidden bg-black/50">
+              <div className="relative flex aspect-[16/10] sm:aspect-[16/9] w-full items-center justify-center overflow-hidden bg-black/60">
                 <AnimatePresence mode="wait">
                   <motion.img
                     key={activeItem.id || activeItem.src}
                     src={activeItem.src}
-                    alt={activeItem.alt}
+                    alt={activeItem.alt || activeItem.title}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                    className="max-h-[65vh] w-full object-contain"
-                    onError={(e) => {
-                      if (activeItem.fallbackSrc && e.currentTarget.src !== activeItem.fallbackSrc) {
-                        e.currentTarget.src = activeItem.fallbackSrc;
-                      } else {
-                        e.currentTarget.style.display = 'none';
-                      }
-                    }}
+                    className="max-h-[62vh] w-full object-contain"
                   />
                 </AnimatePresence>
 
@@ -207,8 +199,8 @@ export default function Gallery() {
                 <button
                   type="button"
                   onClick={handlePrev}
-                  aria-label="Previous photo (Left arrow)"
-                  className="absolute left-3 top-1/2 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-slate-900/80 text-white shadow-lg backdrop-blur-md transition-all hover:bg-blue-600 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+                  aria-label="Previous photo (Left arrow key)"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-slate-900/80 text-white shadow-lg backdrop-blur-md transition-all hover:bg-brand-600 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
                 >
                   <ChevronLeft className="h-6 w-6" aria-hidden="true" />
                 </button>
@@ -217,17 +209,17 @@ export default function Gallery() {
                 <button
                   type="button"
                   onClick={handleNext}
-                  aria-label="Next photo (Right arrow)"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-slate-900/80 text-white shadow-lg backdrop-blur-md transition-all hover:bg-blue-600 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400"
+                  aria-label="Next photo (Right arrow key)"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-slate-900/80 text-white shadow-lg backdrop-blur-md transition-all hover:bg-brand-600 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
                 >
                   <ChevronRight className="h-6 w-6" aria-hidden="true" />
                 </button>
               </div>
 
-              {/* Footer caption bar */}
+              {/* Footer description bar */}
               {activeItem.caption && (
-                <div className="border-t border-white/10 px-6 py-3.5 bg-slate-950/60">
-                  <p className="text-sm text-slate-300">
+                <div className="border-t border-white/10 px-5 py-3.5 sm:px-6 bg-slate-950/80 text-left">
+                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
                     {activeItem.caption}
                   </p>
                 </div>
