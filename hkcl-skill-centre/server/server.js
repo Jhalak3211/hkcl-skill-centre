@@ -12,12 +12,15 @@ dotenv.config(); // fallback to current working directory if exists
 import express from 'express';
 import cors from 'cors';
 import { connectDB } from './config/db.js';
+import { seedInitialAdmin } from './config/seedAdmin.js';
 
 import authRoutes from './routes/authRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
 import applicationRoutes from './routes/applicationRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import staffRoutes from './routes/staffRoutes.js';
+import adminRoutes from './routes/adminRoutes.js';
+import advertisementRoutes from './routes/advertisementRoutes.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -42,8 +45,9 @@ app.use(
 );
 app.use(express.urlencoded({ limit: '20mb', extended: true }));
 
-// Connect to MongoDB and run duplicate audit
+// Connect to MongoDB, run duplicate audit, and auto-seed admin
 connectDB().then(() => {
+  seedInitialAdmin().catch((err) => console.warn('[SeedAdmin] Notice:', err.message));
   import('./controllers/authController.js')
     .then(({ auditExistingDuplicates }) => auditExistingDuplicates())
     .catch(() => {});
@@ -55,13 +59,15 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/applications', applicationRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/staff', staffRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/advertisements', advertisementRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'ok',
     service: 'HKCL Skill Centre Portal Backend',
-    version: '1.0.0',
+    version: '2.0.0',
     timestamp: new Date().toISOString(),
     feeConfig: {
       registrationFeeInr: 500,
@@ -84,7 +90,8 @@ app.use((err, req, res, next) => {
     return res.status(413).json({
       success: false,
       code: 'PAYLOAD_TOO_LARGE',
-      error: 'Upload payload exceeds the allowed size limit (maximum 20MB). Please compress photos or documents before uploading.',
+      error:
+        'Upload payload exceeds the allowed size limit (maximum 20MB). Please compress photos or documents before uploading.',
     });
   }
   console.error('[Server Error]', err);
@@ -98,23 +105,11 @@ process.on('unhandledRejection', (reason, promise) => {
   console.error('[Unhandled Rejection]', reason);
 });
 
-process.on('uncaughtException', (err) => {
-  console.error('[Uncaught Exception]', err);
-});
-
-// Start Server when executed directly
-const isMainModule =
-  process.argv[1] &&
-  (process.argv[1].replace(/\\/g, '/').endsWith('/server.js') ||
-   process.argv[1].replace(/\\/g, '/').endsWith('/server/server.js'));
-
-if (isMainModule) {
+// Start HTTP server only if not in test suite environment
+if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
-    console.log(`=======================================================`);
-    console.log(`  HKCL Skill Centre API Server is running on port ${PORT}`);
-    console.log(`  Health Check: http://localhost:${PORT}/api/health`);
-    console.log(`  Registration Fee: INR 500 (Strictly enforced)`);
-    console.log(`=======================================================`);
+    console.log(`[HKCL Server] Running on http://localhost:${PORT}`);
+    console.log(`[HKCL Server] Accepting origins: ${CLIENT_ORIGIN}`);
   });
 }
 

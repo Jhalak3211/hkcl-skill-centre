@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import Container from '../../components/Container.jsx';
 import Seo from '../../components/Seo.jsx';
+import { getStaffHeaders, getStaffUser, isStaffAuthenticated, clearStaffSession } from '../../utils/auth.js';
 
 const DEFAULT_STAFF_KEY = 'hkcl_staff_secret_key_2026';
 
@@ -29,7 +30,8 @@ export default function StaffDashboard() {
     () => sessionStorage.getItem('hkcl_staff_access_key') || ''
   );
   const [inputKey, setInputKey] = useState('');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => isStaffAuthenticated());
+  const [currentStaff, setCurrentStaff] = useState(() => getStaffUser());
   const [authError, setAuthError] = useState('');
 
   const [activeTab, setActiveTab] = useState('under_review'); // 'under_review' | 'corrections_required' | 'documents_approved' | 'payment_submitted' | 'final_admission' | 'all'
@@ -65,10 +67,7 @@ export default function StaffDashboard() {
 
     try {
       const res = await fetch('/api/staff/overview', {
-        headers: {
-          'x-staff-key': keyToUse,
-          'x-staff-name': 'Admissions Desk Staff',
-        },
+        headers: getStaffHeaders(),
       });
 
       if (res.status === 403 || res.status === 401) {
@@ -102,7 +101,7 @@ export default function StaffDashboard() {
   }, [staffKey]);
 
   useEffect(() => {
-    if (staffKey) {
+    if (isStaffAuthenticated() || staffKey) {
       fetchOverview(staffKey);
     }
   }, [staffKey, fetchOverview]);
@@ -118,9 +117,10 @@ export default function StaffDashboard() {
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem('hkcl_staff_access_key');
+    clearStaffSession();
     setStaffKey('');
     setIsAuthenticated(false);
+    setCurrentStaff(null);
     setSelectedApp(null);
   };
 
@@ -173,11 +173,7 @@ export default function StaffDashboard() {
     try {
       const res = await fetch(endpoint, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-staff-key': staffKey || DEFAULT_STAFF_KEY,
-          'x-staff-name': 'Admissions Desk Officer',
-        },
+        headers: getStaffHeaders(),
         body: JSON.stringify(payload),
       });
 
@@ -350,6 +346,16 @@ export default function StaffDashboard() {
                 </div>
               )}
 
+              <div className="mb-4">
+                <Link to="/staff/login" className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-brand-900 text-white font-semibold text-xs hover:bg-brand-950 transition shadow-xs">
+                  <span>Log In with Registered Gmail</span>
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+                <div className="relative my-4 text-center">
+                  <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200"></div></div>
+                  <span className="relative bg-white px-2 text-[11px] text-slate-400 uppercase tracking-wider">or use staff key</span>
+                </div>
+              </div>
               <form onSubmit={handleLogin} className="space-y-4 text-left">
                 <div>
                   <label htmlFor="staff-key-input" className="block text-xs font-semibold text-slate-700 mb-1">

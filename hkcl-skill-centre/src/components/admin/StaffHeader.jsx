@@ -1,33 +1,24 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ShieldCheck, Lock, ExternalLink, LogOut } from 'lucide-react';
-import Brand from '../Brand.jsx';
+import { ShieldCheck, ExternalLink, LogOut, User } from 'lucide-react';
+import { getStaffUser, clearStaffSession, isStaffAuthenticated } from '../../utils/auth.js';
 
 export default function StaffHeader() {
   const navigate = useNavigate();
-  const [hasStaffKey, setHasStaffKey] = useState(
-    () => Boolean(sessionStorage.getItem('hkcl_staff_access_key'))
-  );
+  const [staff, setStaff] = useState(() => getStaffUser());
+  const [hasAuth, setHasAuth] = useState(() => isStaffAuthenticated());
 
   useEffect(() => {
-    const handleStorageChange = () => {
-      setHasStaffKey(Boolean(sessionStorage.getItem('hkcl_staff_access_key')));
-    };
-    window.addEventListener('storage', handleStorageChange);
-    // Also poll sessionStorage state briefly on navigation
-    const timer = setInterval(() => {
-      setHasStaffKey(Boolean(sessionStorage.getItem('hkcl_staff_access_key')));
-    }, 1000);
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      clearInterval(timer);
-    };
+    setStaff(getStaffUser());
+    setHasAuth(isStaffAuthenticated());
   }, []);
 
   const handleSignOut = () => {
-    sessionStorage.removeItem('hkcl_staff_access_key');
-    setHasStaffKey(false);
-    window.location.reload();
+    if (window.confirm('Are you sure you want to sign out of the Staff Portal?')) {
+      clearStaffSession();
+      setHasAuth(false);
+      navigate('/staff/login');
+    }
   };
 
   return (
@@ -64,7 +55,18 @@ export default function StaffHeader() {
           </div>
 
           {/* Right Action Controls: Discrete, strictly staff-only */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            {/* Staff User Info Pill */}
+            {staff && (
+              <div className="hidden sm:flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-brand-100">
+                <User className="h-3.5 w-3.5 text-amber-400" />
+                <div className="text-left">
+                  <span className="font-semibold text-white block leading-tight">{staff.name}</span>
+                  <span className="text-[10px] text-brand-300 block">{staff.designation || 'Staff'}</span>
+                </div>
+              </div>
+            )}
+
             {/* Link to public website */}
             <Link
               to="/"
@@ -72,17 +74,17 @@ export default function StaffHeader() {
               title="Return to public student website"
             >
               <ExternalLink className="h-3.5 w-3.5 text-brand-300" />
-              <span className="hidden sm:inline">View Public Website</span>
-              <span className="sm:hidden">Website</span>
+              <span className="hidden sm:inline">Public Site</span>
+              <span className="sm:hidden">Site</span>
             </Link>
 
-            {/* Sign Out / Lock button if key is active */}
-            {hasStaffKey && (
+            {/* Sign Out button */}
+            {hasAuth && (
               <button
                 type="button"
                 onClick={handleSignOut}
                 className="inline-flex items-center gap-1.5 rounded-lg border border-red-500/40 bg-red-950/40 px-3 py-1.5 text-xs font-medium text-red-200 hover:bg-red-900/60 transition"
-                title="Lock portal and clear staff key"
+                title="Sign out of Staff Portal"
               >
                 <LogOut className="h-3.5 w-3.5 text-red-300" />
                 <span className="hidden sm:inline">Sign Out</span>

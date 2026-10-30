@@ -1,3 +1,4 @@
+import { logActivity } from '../middleware/auth.js';
 import crypto from 'crypto';
 import Razorpay from 'razorpay';
 import Application from '../models/Application.js';
@@ -800,6 +801,7 @@ export async function verifyStaffPayment(req, res) {
       memoryApplications.set(applicationId, memApp);
     }
 
+    await logActivity({ action: 'PAYMENT_VERIFIED', category: 'payment', description: `Payment verified for application ${applicationId} (Receipt: ${receiptNo})`, targetId: applicationId, req, details: { receiptNo, verifierNotes } });
     return res.status(200).json({
       success: true,
       message: 'Payment verified successfully against centre records. Application is approved and locked.',
@@ -890,6 +892,7 @@ export async function rejectStaffPayment(req, res) {
       memoryApplications.set(applicationId, memApp);
     }
 
+    await logActivity({ action: 'PAYMENT_REJECTED', category: 'payment', description: 'Payment rejected for application ' + applicationId + ': ' + cleanReason, targetId: applicationId, req, details: { reason: cleanReason } });
     return res.status(200).json({
       success: true,
       message: 'Payment submission marked as rejected. Student will be prompted to correct and resubmit.',

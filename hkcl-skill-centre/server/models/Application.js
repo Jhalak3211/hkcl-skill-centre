@@ -239,6 +239,12 @@ const applicationSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    assignedStaff: {
+      staffId: { type: String, default: '' },
+      name: { type: String, default: '' },
+      email: { type: String, default: '' },
+      assignedAt: { type: Date, default: null },
+    },
     isLocked: {
       type: Boolean,
       default: false,

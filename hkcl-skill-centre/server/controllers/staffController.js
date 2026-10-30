@@ -1,3 +1,4 @@
+import { logActivity } from '../middleware/auth.js';
 import Application from '../models/Application.js';
 import Student from '../models/Student.js';
 import { isDbConnected } from '../config/db.js';
@@ -299,6 +300,7 @@ export async function approveDocuments(req, res) {
       memoryApplications.set(applicationId, memApp);
     }
 
+    await logActivity({ action: 'DOCUMENTS_APPROVED', category: 'application', description: `Documents approved for application ${applicationId}`, targetId: applicationId, req, details: { notes } });
     return res.status(200).json({
       success: true,
       message: 'Application documents approved successfully. Student payment step is now unlocked.',
@@ -396,6 +398,7 @@ export async function requestDocumentCorrections(req, res) {
       memoryApplications.set(applicationId, memApp);
     }
 
+    await logActivity({ action: 'DOCUMENTS_CORRECTIONS', category: 'application', description: `Document corrections requested for application ${applicationId}: ${cleanExplanation}`, targetId: applicationId, req });
     return res.status(200).json({
       success: true,
       message: 'Correction request recorded. Student dashboard will highlight required changes.',
@@ -591,6 +594,7 @@ export async function finalAdmitApplication(req, res) {
       memoryApplications.set(applicationId, memApp);
     }
 
+    await logActivity({ action: 'ADMISSION_APPROVED', category: 'admission', description: 'Final admission approved for application ' + applicationId + ' (Enrollment No: ' + enrollmentNo + ')', targetId: applicationId, req, details: { enrollmentNo, assignedBatch } });
     return res.status(200).json({
       success: true,
       message: 'Final admission granted. Applicant is officially enrolled.',
@@ -677,6 +681,7 @@ export async function finalRejectApplication(req, res) {
       memoryApplications.set(applicationId, memApp);
     }
 
+    await logActivity({ action: 'ADMISSION_REJECTED', category: 'admission', description: 'Admission rejected for application ' + applicationId + ': ' + cleanReason, targetId: applicationId, req });
     return res.status(200).json({
       success: true,
       message: 'Admission rejected.',

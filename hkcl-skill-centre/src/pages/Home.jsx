@@ -20,6 +20,7 @@ import FaqList from '../components/FaqList.jsx';
 import ContactMethods from '../components/ContactMethods.jsx';
 import HeroSlideshow from '../components/HeroSlideshow.jsx';
 import GoogleReviews from '../components/GoogleReviews.jsx';
+import HomeAdvertisement from '../components/HomeAdvertisement.jsx';
 import { FadeIn, FadeInStagger, FadeInItem } from '../components/MotionReveal.jsx';
 import { getFeaturedCourses, hcocSectors } from '../data/courses.js';
 import { previewFaqs } from '../data/faqs.js';
@@ -169,6 +170,9 @@ export default function Home() {
           </div>
         </Container>
       </section>
+
+      {/* ── DYNAMIC HOMEPAGE ADVERTISEMENT BANNER ── */}
+      <HomeAdvertisement />
 
       {/* ── INTRODUCTION ─────────────────────────────────────────────────── */}
       <section aria-labelledby="intro-title" className="pt-16 sm:pt-20">
