@@ -95,17 +95,28 @@ export default function CourseCard({ course, variant = 'default', headingLevel: 
         </dl>
       )}
 
-      <div className="mt-auto flex flex-wrap gap-2 pt-6">
-        <Button to={`/courses/${course.slug}`} variant="secondary" size="sm">
-          View details
-          <span className="sr-only"> for {course.name}</span>
-        </Button>
-        <Button {...enquiry} variant="primary" size="sm">
-          <MessageCircle className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" aria-hidden="true" />
-          Enquire
-          <span className="sr-only"> about {course.name}</span>
-        </Button>
-      </div>
+      
+<div className="mt-auto flex flex-wrap gap-2 pt-6">
+  <Button to={`/courses/${course.slug}`} variant="secondary" size="sm">
+    View details
+    <span className="sr-only"> for {course.name}</span>
+  </Button>
+
+  <Button to={`/apply?course=${encodeURIComponent(course.slug)}`} variant="primary" size="sm">
+    Apply Now
+    <span className="sr-only"> for {course.name}</span>
+  </Button>
+
+  <Button {...enquiry} variant="secondary" size="sm">
+    <MessageCircle
+      className="h-4 w-4 transition-transform duration-200 group-hover:scale-110"
+      aria-hidden="true"
+    />
+    Enquire
+    <span className="sr-only"> about {course.name}</span>
+  </Button>
+</div>
+
     </article>
   );
 }

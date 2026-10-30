@@ -1,33 +1,27 @@
-
 import { Link } from 'react-router-dom';
 import { siteConfig } from '../data/siteConfig.js';
 
 export default function Brand() {
-  const { logo, name, locationName } = siteConfig;
+  const { logo } = siteConfig;
 
   return (
     <Link
       to="/"
-      aria-label={`${name}, home`}
-      className="group flex min-w-0 items-center gap-3 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+      aria-label="HKCL Skill Centre, home"
+      className="group flex min-w-0 items-center gap-3.5 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
     >
       <img
         src="/images/logo.png"
-        alt={logo.alt || `${name} logo`}
-        className="h-14 w-14 shrink-0 object-contain transition-transform duration-300 group-hover:scale-105 sm:h-16 sm:w-16 lg:h-[72px] lg:w-[72px]"
+        alt={logo.alt || 'HKCL Skill Centre logo'}
+        className="h-13 w-13 sm:h-14 sm:w-14 lg:h-15 lg:w-15 shrink-0 object-contain transition-transform duration-200 group-hover:scale-105"
       />
 
-      <span className="flex min-w-0 flex-col justify-center gap-1">
-        <span className="whitespace-nowrap text-base font-semibold leading-tight text-brand-950 sm:text-lg">
-          {name}
+      <span className="flex min-w-0 flex-col justify-center">
+        <span className="whitespace-nowrap text-lg sm:text-xl lg:text-[22px] font-bold tracking-tight text-brand-950 leading-tight">
+          HKCL Skill Centre
         </span>
-
-        <span className="whitespace-nowrap text-[11px] font-bold uppercase leading-tight tracking-wide text-orange-600 sm:text-xs">
-          Authorised Learning Centre
-        </span>
-
-        <span className="text-xs leading-tight text-slate-500 sm:text-sm">
-          {locationName}
+        <span className="whitespace-nowrap text-xs sm:text-[13px] font-medium text-slate-500 leading-tight mt-0.5">
+          Run by Achariya Educational Institution
         </span>
       </span>
     </Link>

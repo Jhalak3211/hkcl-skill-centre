@@ -20,6 +20,15 @@ function injectSiteConfig() {
 
 export default defineConfig({
   plugins: [react(), tailwindcss(), injectSiteConfig()],
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
   build: {
     rollupOptions: {
       output: {

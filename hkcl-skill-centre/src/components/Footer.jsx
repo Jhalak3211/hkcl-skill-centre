@@ -47,7 +47,7 @@ export default function Footer() {
   ].filter((item) => item.href);
 
   return (
-    <footer className="on-dark mt-12 bg-brand-950 text-brand-100 sm:mt-16">
+    <footer className="on-dark mt-12 bg-brand-950 text-brand-100 sm:mt-16 print:hidden">
       {/* Main footer */}
       <Container className="py-8 sm:py-9 lg:py-10">
         <div className="grid grid-cols-1 gap-x-8 gap-y-7 sm:grid-cols-2 lg:grid-cols-[1.35fr_0.8fr_1fr_1.2fr] lg:gap-x-10 lg:gap-y-0">
@@ -203,7 +203,14 @@ export default function Footer() {
             reserved.
           </p>
 
-          
+          <div className="flex items-center gap-4 text-xs">
+            <Link
+              to="/staff/dashboard"
+              className="text-brand-300 hover:text-white transition-colors"
+            >
+              Staff Portal
+            </Link>
+          </div>
         </Container>
       </div>
     </footer>

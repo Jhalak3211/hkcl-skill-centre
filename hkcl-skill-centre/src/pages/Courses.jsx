@@ -10,6 +10,7 @@ import {
   ArrowRight,
   ArrowLeft,
   Layers3,
+  X,
 } from 'lucide-react';
 
 import Seo from '../components/Seo.jsx';
@@ -23,6 +24,18 @@ import {
   FadeInItem,
 } from '../components/MotionReveal.jsx';
 import { categories, courses, displayGroups } from '../data/courses.js';
+
+// Normalise group data so a missing courseSlugs property cannot crash the page.
+const safeDisplayGroups = (Array.isArray(displayGroups) ? displayGroups : []).map(
+  (group) => ({
+    ...group,
+    courseSlugs: Array.isArray(group.courseSlugs) ? group.courseSlugs : [],
+  }),
+);
+
+const publishedCourses = courses.filter(
+  (course) => course.published !== false,
+);
 
 const getGroupIcon = (group) => {
   if (group.id === 'hs-cit') return Monitor;
@@ -54,15 +67,11 @@ export default function Courses() {
     ? requestedCategory
     : 'all';
 
-  const activeGroup = displayGroups.some(
-    (group) => group.id === requestedGroup,
-  )
-    ? requestedGroup
-    : null;
+  const activeGroup =
+    safeDisplayGroups.find((group) => group.id === requestedGroup) || null;
 
   const hasSearch = query.trim().length > 0;
 
-  // Show the programme overview when no filters are selected.
   const isBrowsingAll =
     activeCategory === 'all' && !activeGroup && !hasSearch;
 
@@ -100,18 +109,14 @@ export default function Courses() {
   };
 
   const countForGroup = (group) =>
-    courses.filter(
-      (course) =>
-        course.published !== false &&
-        group.courseSlugs.includes(course.slug),
+    publishedCourses.filter((course) =>
+      group.courseSlugs.includes(course.slug),
     ).length;
 
   const filteredCourses = useMemo(() => {
     const needle = query.trim().toLowerCase();
 
-    return courses.filter((course) => {
-      if (course.published === false) return false;
-
+    return publishedCourses.filter((course) => {
       if (
         activeCategory !== 'all' &&
         course.category !== activeCategory
@@ -136,7 +141,7 @@ export default function Courses() {
         course.category,
       ]
         .filter(Boolean)
-        .some((value) => value.toLowerCase().includes(needle));
+        .some((value) => String(value).toLowerCase().includes(needle));
     });
   }, [activeCategory, activeGroup, query]);
 
@@ -144,14 +149,8 @@ export default function Courses() {
     (category) => category.id === activeCategory,
   );
 
-  const selectedGroup = activeGroup;
-
-  /*
-   * Group matching courses by subject.
-   * Courses retain their original category and detail-page slug.
-   */
   const groupedResults = useMemo(() => {
-    const results = displayGroups
+    const results = safeDisplayGroups
       .map((group) => {
         const items = filteredCourses.filter((course) =>
           group.courseSlugs.includes(course.slug),
@@ -160,15 +159,16 @@ export default function Courses() {
         return {
           id: group.id,
           label: group.label,
+          description: group.description,
           items,
           categoryId: items[0]?.category || 'hcoc',
         };
       })
       .filter((group) => group.items.length > 0);
 
-    // Keep any courses visible if they have not been assigned a group yet.
+    // Preserve courses that have not yet been assigned to a display group.
     const assignedSlugs = new Set(
-      displayGroups.flatMap((group) => group.courseSlugs),
+      safeDisplayGroups.flatMap((group) => group.courseSlugs),
     );
 
     const ungrouped = filteredCourses.filter(
@@ -179,6 +179,7 @@ export default function Courses() {
       results.push({
         id: 'ungrouped-courses',
         label: 'Other Courses',
+        description: 'Additional courses listed by the centre.',
         items: ungrouped,
         categoryId: ungrouped[0]?.category || 'short',
       });
@@ -187,8 +188,8 @@ export default function Courses() {
     return results;
   }, [filteredCourses]);
 
-  const visibleGroups = selectedGroup
-    ? groupedResults.filter((group) => group.id === selectedGroup.id)
+  const visibleGroups = activeGroup
+    ? groupedResults.filter((group) => group.id === activeGroup.id)
     : activeCategory === 'hcoc'
       ? groupedResults.filter((group) =>
           group.items.some((course) => course.category === 'hcoc'),
@@ -234,51 +235,96 @@ export default function Courses() {
       </section>
 
       <Container className="py-8 sm:py-12">
-        {/* Search and section heading */}
-        <FadeIn>
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h2 className="text-lg font-semibold text-brand-950">
-                {isBrowsingAll
-                  ? 'Browse by programme'
-                  : 'Find your course'}
-              </h2>
-
-              <p className="mt-1 text-sm leading-6 text-slate-600">
-                {isBrowsingAll
-                  ? 'Choose a subject area to explore its courses.'
-                  : selectedGroup?.description ||
-                    selectedCategory?.description ||
-                    'Search by course name, topic or keyword.'}
-              </p>
-            </div>
-
-            <div className="relative w-full sm:max-w-sm">
+        {/* Prominent Course Search Bar & Quick Filters */}
+        <FadeIn className="mb-8">
+          <div className="mx-auto max-w-2xl">
+            {/* Search Input Box */}
+            <div className="relative flex items-center rounded-xl border-2 border-slate-300 bg-white shadow-xs transition-colors focus-within:border-brand-700 focus-within:ring-2 focus-within:ring-brand-700/20">
               <Search
-                className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500"
+                className="pointer-events-none absolute left-4 h-5 w-5 text-slate-500"
                 aria-hidden="true"
               />
-
               <label htmlFor="course-search" className="sr-only">
                 Search courses
               </label>
-
               <input
                 id="course-search"
                 type="search"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Search courses..."
-                className="min-h-12 w-full rounded-xl border border-brand-200 bg-white pl-11 pr-4 text-sm text-brand-950 placeholder:text-slate-400 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+                className="min-h-13 sm:min-h-14 w-full rounded-xl bg-white pl-12 pr-11 text-base text-slate-900 placeholder:text-slate-500 focus:outline-none"
               />
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => setQuery('')}
+                  aria-label="Clear search"
+                  className="absolute right-3.5 flex h-7 w-7 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+
+            {/* Quick Category Filters */}
+            <div className="mt-3.5 flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setCategory('all')}
+                className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+                  activeCategory === 'all' && !activeGroup && !hasSearch
+                    ? 'bg-brand-800 text-white'
+                    : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                All Programmes ({publishedCourses.length})
+              </button>
+              {categories.map((cat) => {
+                const count = publishedCourses.filter((c) => c.category === cat.id).length;
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => setCategory(cat.id)}
+                    className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+                      activeCategory === cat.id && !activeGroup && !hasSearch
+                        ? 'bg-brand-800 text-white'
+                        : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+                    }`}
+                  >
+                    {cat.label} ({count})
+                  </button>
+                );
+              })}
             </div>
           </div>
         </FadeIn>
 
-        {/* Overview: all 10 subject/programme groups */}
+        {/* Section heading */}
+        <FadeIn>
+          <div className="flex flex-col gap-1 border-b border-slate-100 pb-3 mb-6">
+            <h2 className="text-lg font-semibold text-brand-950">
+              {hasSearch
+                ? `Search results for "${query.trim()}"`
+                : isBrowsingAll
+                ? 'Browse by programme'
+                : activeGroup?.label || selectedCategory?.label || 'Courses'}
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600">
+              {hasSearch
+                ? `${filteredCourses.length} ${filteredCourses.length === 1 ? 'course' : 'courses'} found matching your search.`
+                : isBrowsingAll
+                ? 'Choose a subject area or category above to explore courses.'
+                : activeGroup?.description || selectedCategory?.description || 'Explore courses below.'}
+            </p>
+          </div>
+        </FadeIn>
+
+        {/* Overview: display all subject groups */}
         {isBrowsingAll && (
           <FadeInStagger className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {displayGroups.map((group) => {
+            {safeDisplayGroups.map((group) => {
               const Icon = getGroupIcon(group);
               const total = countForGroup(group);
 
@@ -336,7 +382,7 @@ export default function Courses() {
                 </button>
 
                 <h2 className="text-xl font-semibold text-brand-950">
-                  {selectedGroup?.label ||
+                  {activeGroup?.label ||
                     selectedCategory?.label ||
                     'Search results'}
                 </h2>
@@ -386,7 +432,7 @@ export default function Courses() {
                   >
                     {(activeCategory === 'all' ||
                       activeCategory === 'hcoc') &&
-                      !selectedGroup && (
+                      !activeGroup && (
                         <div className="mb-4 flex items-center gap-3">
                           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-800">
                             <Layers3

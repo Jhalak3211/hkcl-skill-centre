@@ -85,6 +85,28 @@ export const siteConfig = {
     url: 'https://maps.google.com/?q=HKCL+Skill+Centre+Barnala+Road+Sirsa+Haryana',
   },
 
+  /**
+   * MANUAL UPI PAYMENT CONFIGURATION
+   * ---------------------------------------------------------------------------
+   * Official UPI QR code and account details provided by Achariya Educational
+   * Institution (Union Bank of India).
+   */
+  upiPayment: {
+    registrationFeeInr: 500,
+    upiId: 'QR919215913211-0157@unionbankofindia',
+    payeeName: 'ACHARIYA EDUCATIONAL INSTITUTION (Union Bank of India)',
+    qrImage: '/images/upi-qr.jpg',
+    isConfigured: true,
+    instructions: [
+      'Open any UPI payment app (Google Pay, PhonePe, Paytm, BHIM, or your bank app).',
+      'Scan the official Union Bank QR code above, or enter the UPI ID manually.',
+      'Verify that the payee name shows ACHARIYA EDUCATIONAL INSTITUTION.',
+      'Enter the exact registration fee: ₹500 (no convenience fees or added charges).',
+      'After completing payment, find your 12-digit UPI Reference / UTR Number in your app receipt.',
+      'Enter the UTR number below and submit for verification by the admissions team.',
+    ],
+  },
+
   // NOT SHOWN ON THE SITE. The existing profile describes the centre as
   // "Promoted By Government Of Haryana Computer Education & Training Centre
   // Achariya Educational Institution". That wording is unclear, so it is kept
