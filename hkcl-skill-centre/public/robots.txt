@@ -1,5 +1,9 @@
 User-agent: *
 Allow: /
 Disallow: /student-login
+Disallow: /coming-soon
+Disallow: /admin
+Disallow: /staff
+Disallow: /admission
 
 Sitemap: https://www.example.com/sitemap.xml

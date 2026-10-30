@@ -14,14 +14,12 @@ import Seo from '../components/Seo.jsx';
 import Container from '../components/Container.jsx';
 import Button from '../components/Button.jsx';
 import SectionHeading from '../components/SectionHeading.jsx';
-import CourseCard from '../components/CourseCard.jsx';
-import DurationChart from '../components/DurationChart.jsx';
 import FaqList from '../components/FaqList.jsx';
-import ContactMethods from '../components/ContactMethods.jsx';
 import HeroSlideshow from '../components/HeroSlideshow.jsx';
 import GoogleReviews from '../components/GoogleReviews.jsx';
+import SocialSection from '../components/SocialSection.jsx';
 import { FadeIn, FadeInStagger, FadeInItem } from '../components/MotionReveal.jsx';
-import { getFeaturedCourses, hcocSectors } from '../data/courses.js';
+import { hcocSectors } from '../data/courses.js';
 import { previewFaqs } from '../data/faqs.js';
 import { siteConfig } from '../data/siteConfig.js';
 import { getTelHref } from '../utils/contact.js';
@@ -82,7 +80,6 @@ const reasons = [
 
 export default function Home() {
   const tel = getTelHref();
-  const featured = getFeaturedCourses();
 
   return (
     <>
@@ -96,23 +93,14 @@ export default function Home() {
         {/* Full-bleed automated background image slideshow with light gradient overlay */}
         <HeroSlideshow />
 
-        <Container className="relative z-10 py-20 sm:py-24 lg:py-32">
-          <div className="max-w-2xl lg:max-w-3xl">
+        <Container className="relative z-10 py-20 sm:py-24 lg:py-28 xl:py-32">
+          <div className="max-w-2xl lg:max-w-3xl xl:max-w-4xl">
             <motion.div variants={heroGroup} initial="hidden" animate="show">
-              {/* Trust badge
-              <motion.div
-                variants={heroItem}
-                className="mb-5 inline-flex items-center gap-2 rounded-full border border-brand-200/90 bg-white/95 px-4 py-1.5 text-xs font-semibold text-brand-900 shadow-xs backdrop-blur-md"
-              >
-                <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span>HKCL Authorised Learning Centre &bull; Sirsa</span>
-              </motion.div> */}
-
               {/* Main headline */}
               <motion.h1
                 id="hero-title"
                 variants={heroItem}
-                className="text-4xl font-bold tracking-tight text-brand-950 sm:text-5xl lg:text-[3.5rem] lg:leading-[1.12]"
+                className="text-4xl font-bold tracking-tight text-brand-950 sm:text-5xl lg:text-[3.25rem] xl:text-[3.75rem] lg:leading-[1.12]"
               >
                 Computer Education &amp; AI Skill Training Centre
               </motion.h1>
@@ -120,7 +108,7 @@ export default function Home() {
               {/* Tagline */}
               <motion.p
                 variants={heroItem}
-                className="mt-4 text-lg font-semibold text-brand-700 sm:text-xl"
+                className="mt-4 text-lg font-semibold text-brand-700 sm:text-xl lg:text-2xl"
               >
                 {siteConfig.heroTagline}
               </motion.p>
@@ -128,7 +116,7 @@ export default function Home() {
               {/* Description */}
               <motion.p
                 variants={heroItem}
-                className="mt-4 max-w-xl text-base leading-relaxed text-slate-700 sm:text-lg"
+                className="mt-4 max-w-2xl text-base leading-relaxed text-slate-700 sm:text-lg"
               >
                 HS-CIT programmes, HCOC career courses and typing training on Barnala Road.
                 HS-CIT and 120-hour HCOC courses carry HKCL and HSBTE certificates.
@@ -192,46 +180,6 @@ export default function Home() {
           </FadeIn>
         </Container>
       </section>
-
-      {/* ── FEATURED COURSES ───────────────────────────────────────────────
-      <section aria-labelledby="featured-title" className="pt-16 sm:pt-20">
-        <Container>
-          <FadeIn className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-            <SectionHeading
-              id="featured-title"
-              title="HS-CIT programmes"
-              intro="Choose the duration that fits your schedule."
-            />
-            <Button to="/courses" variant="secondary" className="self-start sm:self-auto">
-              See all courses
-            </Button>
-          </FadeIn>
-
-          <FadeInStagger className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {featured.map((course) => (
-              <FadeInItem key={course.slug}>
-                <CourseCard course={course} variant="feature" />
-              </FadeInItem>
-            ))}
-          </FadeInStagger>
-        </Container>
-      </section>
-{/*  */}
-      {/* ── HS-CIT DURATION CHART ───────────────────────────────────────────
-      <section aria-labelledby="duration-title" className="pt-16 sm:pt-20">
-        <Container>
-          <FadeIn>
-            <SectionHeading
-              id="duration-title"
-              title="HS-CIT at a glance"
-              intro="The same core skills in three lengths. Pick the one that fits your time and goals."
-            />
-          </FadeIn>
-          <FadeIn delay={0.1} className="mt-8">
-            <DurationChart />
-          </FadeIn>
-        </Container>
-      </section> */ }
 
       {/* ── HCOC BAND ────────────────────────────────────────────────────── */}
       <section aria-labelledby="hcoc-title" className="pt-16 sm:pt-20">
@@ -299,6 +247,9 @@ export default function Home() {
       {/* ── GOOGLE REVIEWS ───────────────────────────────────────────────── */}
       <GoogleReviews />
 
+      {/* ── STAY CONNECTED WITH HKCL (SOCIAL MEDIA SECTION) ──────────────── */}
+      <SocialSection />
+
       {/* ── FAQ PREVIEW ──────────────────────────────────────────────────── */}
       <section aria-labelledby="faq-title" className="pt-16 sm:pt-20">
         <Container>
@@ -326,25 +277,6 @@ export default function Home() {
           </FadeIn>
         </Container>
       </section>
-
-      {/* ── CONTACT ──────────────────────────────────────────────────────── */}
-      {/* <section aria-labelledby="contact-title" className="pt-16 sm:pt-20">
-        <Container>
-          <FadeIn className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14">
-            <div>
-              <SectionHeading
-                id="contact-title"
-                title="Talk to the centre"
-                intro="Ask about batches, fees or eligibility. Call, message on WhatsApp or visit during opening hours."
-              />
-              <Button to="/contact" variant="secondary" className="mt-6">
-                Full contact details
-              </Button>
-            </div>
-            <ContactMethods />
-          </FadeIn>
-        </Container>
-      </section> */}
     </>
   );
 }

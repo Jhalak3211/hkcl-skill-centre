@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import { CheckCircle2, Loader2, Send } from 'lucide-react';
+import { CheckCircle2, Loader2, Send, Phone, MessageCircle } from 'lucide-react';
 import Button from './Button.jsx';
 import { submitEnquiry } from '../services/enquiryService.js';
 import { courses } from '../data/courses.js';
+import { siteConfig } from '../data/siteConfig.js';
+import { WhatsAppIcon } from './SocialIcons.jsx';
 
 export default function EnquiryForm({ initialCourse = '', className = '' }) {
   const [formData, setFormData] = useState({
@@ -15,6 +17,7 @@ export default function EnquiryForm({ initialCourse = '', className = '' }) {
 
   const [status, setStatus] = useState('idle'); // 'idle' | 'submitting' | 'success' | 'error'
   const [errorMessage, setErrorMessage] = useState('');
+  const [submissionResult, setSubmissionResult] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,8 +34,18 @@ export default function EnquiryForm({ initialCourse = '', className = '' }) {
     setErrorMessage('');
 
     try {
-      await submitEnquiry(formData);
+      const res = await submitEnquiry(formData);
+      setSubmissionResult(res);
       setStatus('success');
+
+      // Attempt to open WhatsApp in a new tab with pre-filled message
+      if (res.whatsappUrl) {
+        try {
+          window.open(res.whatsappUrl, '_blank', 'noopener,noreferrer');
+        } catch (_) {
+          // If popup is blocked by browser, user can click the button on screen
+        }
+      }
     } catch (err) {
       setStatus('error');
       setErrorMessage(err.message || 'Something went wrong. Please try calling the centre directly.');
@@ -49,26 +62,72 @@ export default function EnquiryForm({ initialCourse = '', className = '' }) {
     });
     setStatus('idle');
     setErrorMessage('');
+    setSubmissionResult(null);
   };
 
-  if (status === 'success') {
+  if (status === 'success' && submissionResult) {
+    const { whatsappUrl, enquiry } = submissionResult;
     return (
       <div
-        className={`rounded-2xl border border-emerald-200 bg-emerald-50/90 p-8 text-center backdrop-blur-md ${className}`}
+        className={`rounded-2xl border border-emerald-200 bg-emerald-50/90 p-6 sm:p-8 text-center backdrop-blur-md ${className}`}
         role="alert"
       >
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
-          <CheckCircle2 className="h-6 w-6" aria-hidden="true" />
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700 shadow-2xs">
+          <CheckCircle2 className="h-7 w-7" aria-hidden="true" />
         </div>
-        <h3 className="mt-4 text-xl font-semibold text-emerald-950">
-          Enquiry Received!
+        <h3 className="mt-4 text-xl font-bold text-emerald-950 sm:text-2xl">
+          Enquiry Received &amp; Prepared!
         </h3>
-        <p className="mt-2 text-sm text-emerald-800">
-          Thank you for reaching out. A representative from HKCL Skill Centre will contact you shortly with batch and admission details.
+        <p className="mx-auto mt-2 max-w-md text-sm text-emerald-800">
+          Your enquiry for <strong>{enquiry.course}</strong> has been recorded. Connect with our admission desk on WhatsApp to receive immediate batch timings and fee structure.
         </p>
-        <Button variant="secondary" className="mt-6" onClick={handleReset}>
-          Send another enquiry
-        </Button>
+
+        {/* Action buttons */}
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+          <a
+            href={whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#25D366] px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-all duration-200 hover:bg-[#20ba59] hover:shadow-md active:scale-[0.99]"
+          >
+            <WhatsAppIcon className="h-5 w-5" />
+            <span>Chat on WhatsApp</span>
+          </a>
+
+          <a
+            href={`tel:${siteConfig.contact.phoneE164}`}
+            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-emerald-300 bg-white px-5 py-2.5 text-sm font-semibold text-emerald-950 shadow-2xs transition-all duration-200 hover:bg-emerald-50"
+          >
+            <Phone className="h-4 w-4 text-emerald-700" aria-hidden="true" />
+            <span>Call {siteConfig.contact.phoneDisplay}</span>
+          </a>
+        </div>
+
+        {/* Enquiry Summary */}
+        <div className="mt-6 rounded-xl border border-emerald-200/80 bg-white/80 p-4 text-left text-xs sm:text-sm text-slate-700">
+          <p className="font-semibold text-brand-950">Submitted Details:</p>
+          <div className="mt-2 grid grid-cols-1 gap-1 sm:grid-cols-2">
+            <div><span className="text-slate-500">Name:</span> {enquiry.name}</div>
+            <div><span className="text-slate-500">Phone:</span> {enquiry.phone}</div>
+            <div><span className="text-slate-500">Course:</span> {enquiry.course}</div>
+            {enquiry.email && <div><span className="text-slate-500">Email:</span> {enquiry.email}</div>}
+          </div>
+          {enquiry.message && (
+            <div className="mt-2 text-slate-600">
+              <span className="text-slate-500">Query:</span> {enquiry.message}
+            </div>
+          )}
+        </div>
+
+        <div className="mt-6">
+          <button
+            type="button"
+            onClick={handleReset}
+            className="text-xs font-semibold text-emerald-800 underline underline-offset-4 hover:text-emerald-950"
+          >
+            Send another enquiry
+          </button>
+        </div>
       </div>
     );
   }
@@ -126,6 +185,22 @@ export default function EnquiryForm({ initialCourse = '', className = '' }) {
             value={formData.phone}
             onChange={handleChange}
             placeholder="e.g. 98765 43210"
+            className="mt-1.5 min-h-11 w-full rounded-xl border border-brand-200/90 bg-white px-4 text-sm text-brand-950 placeholder:text-slate-400 transition-all focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
+          />
+        </div>
+
+        {/* Email */}
+        <div>
+          <label htmlFor="enquiry-email" className="block text-sm font-medium text-brand-950">
+            Email Address (Optional)
+          </label>
+          <input
+            id="enquiry-email"
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="e.g. rahul@example.com"
             className="mt-1.5 min-h-11 w-full rounded-xl border border-brand-200/90 bg-white px-4 text-sm text-brand-950 placeholder:text-slate-400 transition-all focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
           />
         </div>

@@ -6,12 +6,18 @@ import { fileURLToPath } from 'node:url';
 import { siteConfig } from '../src/data/siteConfig.js';
 import { courses } from '../src/data/courses.js';
 
-const base = siteConfig.siteUrl.replace(/\/$/, '');
+const envUrl =
+  process.env.VITE_SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : null);
+
+const base = (envUrl || siteConfig.siteUrl).replace(/\/$/, '');
 
 if (base.includes('example.com')) {
   console.warn(
     '\n[seo] siteConfig.siteUrl is still the placeholder (' + base + ').\n' +
-      '[seo] Set your real domain in src/data/siteConfig.js before launch.\n'
+      '[seo] Set your real domain or VITE_SITE_URL before public production launch.\n'
   );
 }
 
@@ -23,7 +29,7 @@ const sitemap =
   paths.map((p) => `  <url><loc>${base}${p === '/' ? '/' : p}</loc></url>`).join('\n') +
   '\n</urlset>\n';
 
-const robots = `User-agent: *\nAllow: /\nDisallow: /student-login\n\nSitemap: ${base}/sitemap.xml\n`;
+const robots = `User-agent: *\nAllow: /\nDisallow: /student-login\nDisallow: /coming-soon\nDisallow: /admin\nDisallow: /staff\nDisallow: /admission\n\nSitemap: ${base}/sitemap.xml\n`;
 
 const publicDir = fileURLToPath(new URL('../public/', import.meta.url));
 writeFileSync(publicDir + 'sitemap.xml', sitemap);

@@ -1,4 +1,3 @@
-
 import { Link } from 'react-router-dom';
 import { siteConfig } from '../data/siteConfig.js';
 
@@ -9,24 +8,20 @@ export default function Brand() {
     <Link
       to="/"
       aria-label={`${name}, home`}
-      className="group flex min-w-0 items-center gap-3 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+      className="group flex min-w-0 items-center gap-3.5 sm:gap-4.5 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
     >
       <img
-        src="/images/logo.png"
+        src="/images/hkcl-brand-logo.png"
         alt={logo.alt || `${name} logo`}
-        className="h-14 w-14 shrink-0 object-contain transition-transform duration-300 group-hover:scale-105 sm:h-16 sm:w-16 lg:h-[72px] lg:w-[72px]"
+        className="h-20 w-auto shrink-0 object-contain transition-transform duration-300 group-hover:scale-105 sm:h-24 lg:h-28 xl:h-32"
       />
 
-      <span className="flex min-w-0 flex-col justify-center gap-1">
-        <span className="whitespace-nowrap text-base font-semibold leading-tight text-brand-950 sm:text-lg">
+      <span className="flex min-w-0 flex-col justify-center">
+        <span className="whitespace-nowrap font-display text-lg font-bold leading-tight text-brand-950 sm:text-xl lg:text-2xl xl:text-3xl">
           {name}
         </span>
 
-        <span className="whitespace-nowrap text-[11px] font-bold uppercase leading-tight tracking-wide text-orange-600 sm:text-xs">
-          Authorised Learning Centre
-        </span>
-
-        <span className="text-xs leading-tight text-slate-500 sm:text-sm">
+        <span className="mt-1 text-xs font-medium leading-tight text-slate-500 sm:text-sm lg:text-base">
           {locationName}
         </span>
       </span>

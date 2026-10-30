@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="300" height="300">
+  <rect width="300" height="300" fill="#f8fafc" rx="16" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="6 6"/>
+  <!-- QR Corner Markers (Decorative Placeholder) -->
+  <rect x="25" y="25" width="60" height="60" fill="none" stroke="#14376f" stroke-width="6" rx="6"/>
+  <rect x="37" y="37" width="36" height="36" fill="#14376f" rx="3"/>
+  <rect x="215" y="25" width="60" height="60" fill="none" stroke="#14376f" stroke-width="6" rx="6"/>
+  <rect x="227" y="37" width="36" height="36" fill="#14376f" rx="3"/>
+  <rect x="25" y="215" width="60" height="60" fill="none" stroke="#14376f" stroke-width="6" rx="6"/>
+  <rect x="37" y="227" width="36" height="36" fill="#14376f" rx="3"/>
+
+  <!-- Center Badge / Placeholder Text -->
+  <rect x="70" y="110" width="160" height="80" fill="#ffffff" rx="10" stroke="#f97316" stroke-width="2"/>
+  <text x="150" y="138" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" fill="#14376f" text-anchor="middle">OFFICIAL UPI QR</text>
+  <text x="150" y="156" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#ea580c" text-anchor="middle">₹500 Registration</text>
+  <text x="150" y="174" font-family="system-ui, sans-serif" font-size="9" fill="#64748b" text-anchor="middle">Replace with Centre QR</text>
+</svg>

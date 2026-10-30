@@ -50,6 +50,20 @@
     -webkit-text-size-adjust: 100%;
     overflow-x: clip;
     background-color: var(--bg-page);
+    font-size: 16px;
+  }
+
+  /* Responsive base scale: eliminates the shrunken/zoomed-out appearance on desktop & high-res screens */
+  @media (min-width: 1024px) {
+    html {
+      font-size: 17px;
+    }
+  }
+
+  @media (min-width: 1440px) {
+    html {
+      font-size: 18px;
+    }
   }
 
   body {

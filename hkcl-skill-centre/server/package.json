@@ -1,0 +1,21 @@
+{
+  "name": "hkcl-portal-backend",
+  "version": "1.0.0",
+  "description": "Express + MongoDB + Razorpay Backend for HKCL Skill Centre Admission Portal",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node test.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.5",
+    "razorpay": "^2.9.5",
+    "resend": "^6.34.1"
+  }
+}

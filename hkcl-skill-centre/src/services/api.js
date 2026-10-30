@@ -43,12 +43,16 @@ export async function apiRequest(endpoint, options = {}) {
     if (!response.ok) {
       let errorMessage = `HTTP error! status: ${response.status}`;
       try {
-        const errorData = await response.json();
-        if (errorData && errorData.message) {
-          errorMessage = errorData.message;
+        const contentType = response.headers.get('content-type') || '';
+        if (contentType.includes('application/json')) {
+          const errorData = await response.json();
+          if (errorData && errorData.message) {
+            errorMessage = errorData.message;
+          }
+        } else {
+          errorMessage = response.statusText || errorMessage;
         }
       } catch {
-        // Fallback to status text if response is not JSON
         errorMessage = response.statusText || errorMessage;
       }
       const error = new Error(errorMessage);
@@ -61,9 +65,17 @@ export async function apiRequest(endpoint, options = {}) {
       return null;
     }
 
+    // If server returned HTML instead of JSON (e.g. SPA fallback to index.html)
+    const contentType = response.headers.get('content-type') || '';
+    if (!contentType.includes('application/json')) {
+      const error = new Error('Backend service is currently not deployed or unavailable.');
+      error.status = 503;
+      throw error;
+    }
+
     return await response.json();
   } catch (error) {
-    console.error(`API Request failed for [${config.method || 'GET'}] ${url}:`, error);
+    console.warn(`API Request notice for [${config.method || 'GET'}] ${url}:`, error.message);
     throw error;
   }
 }

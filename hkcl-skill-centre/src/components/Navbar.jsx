@@ -1,8 +1,8 @@
-
 import { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import Brand from './Brand';
+import Container from './Container.jsx';
 
 const navLinks = [
   { to: '/', label: 'Home', end: true },
@@ -29,9 +29,9 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white">
-      <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8">
+      <Container className="px-3 sm:px-6 lg:px-8">
         {/* Main header */}
-        <div className="flex min-h-[88px] items-center justify-between gap-2 sm:min-h-[96px] sm:gap-4 lg:min-h-[100px]">
+        <div className="flex min-h-[96px] py-2.5 items-center justify-between gap-3 sm:min-h-[116px] sm:gap-4 lg:min-h-[132px] xl:min-h-[144px]">
           {/* Brand: logo, name and tagline */}
           <div className="min-w-0 flex-1 lg:flex-none">
             <Brand />
@@ -56,7 +56,7 @@ export default function Navbar() {
             </nav>
 
             <NavLink
-              to="/admission"
+              to="/contact"
               className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-orange-500 px-4 text-sm font-semibold text-white transition-colors hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400 focus-visible:ring-offset-2"
             >
               Apply for Admission
@@ -115,7 +115,7 @@ export default function Navbar() {
               ))}
 
               <NavLink
-                to="/admission"
+                to="/contact"
                 className="mt-2 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-orange-500 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400"
               >
                 Apply for Admission
@@ -124,7 +124,7 @@ export default function Navbar() {
             </nav>
           </div>
         </div>
-      </div>
+      </Container>
     </header>
   );
 }

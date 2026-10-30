@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 import Seo from '../components/Seo.jsx';
 import Container from '../components/Container.jsx';
@@ -6,11 +7,8 @@ import ContactMethods from '../components/ContactMethods.jsx';
 import EnquiryForm from '../components/EnquiryForm.jsx';
 import { FadeIn } from '../components/MotionReveal.jsx';
 import { siteConfig } from '../data/siteConfig.js';
-import { getStudentPortalUrl } from '../utils/contact.js';
 
 export default function Contact() {
-  const portalUrl = getStudentPortalUrl();
-
   return (
     <>
       <Seo
@@ -64,7 +62,7 @@ export default function Contact() {
                 </li>
                 <li className="flex items-start gap-2.5">
                   <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-600" aria-hidden="true" />
-                  <span>Ask about the upcoming batch commencement, class timings, and online or offline options.</span>
+                  <span>Ask about upcoming batch commencement, class timings, and online or offline options.</span>
                 </li>
                 <li className="flex items-start gap-2.5">
                   <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-600" aria-hidden="true" />
@@ -74,31 +72,26 @@ export default function Contact() {
             </section>
           </FadeIn>
 
-          {portalUrl && (
-            <FadeIn delay={0.25}>
-              <section
-                aria-labelledby="portal-title"
-                className="group rounded-2xl border border-brand-100/90 bg-white/80 p-6 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-brand-400 hover:shadow-md hover:shadow-brand-900/5"
+          <FadeIn delay={0.25}>
+            <section
+              aria-labelledby="portal-title"
+              className="group rounded-2xl border border-brand-100/90 bg-white/80 p-6 shadow-xs backdrop-blur-md transition-all duration-300 hover:border-brand-400 hover:shadow-md hover:shadow-brand-900/5"
+            >
+              <h2 id="portal-title" className="text-xl font-semibold text-brand-950">
+                Already a student?
+              </h2>
+              <p className="mt-2 text-sm text-slate-600">
+                Check learner portal updates and find assistance for current batches, study materials, and certificates.
+              </p>
+              <Link
+                to="/student-login"
+                className="mt-4 inline-flex min-h-11 items-center gap-1.5 font-semibold text-brand-700 underline underline-offset-4 hover:text-brand-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
               >
-                <h2 id="portal-title" className="text-xl font-semibold text-brand-950">
-                  Already a student?
-                </h2>
-                <p className="mt-2 text-sm text-slate-600">
-                  Sign in on the official HKCL portal to access your learner dashboard and course materials. Never enter your credentials on third-party sites.
-                </p>
-                <a
-                  href={portalUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-4 inline-flex min-h-11 items-center gap-1.5 font-semibold text-brand-700 underline underline-offset-4 hover:text-brand-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
-                >
-                  {siteConfig.studentPortal.label}
-                  <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
-                  <span className="sr-only"> (opens in a new tab)</span>
-                </a>
-              </section>
-            </FadeIn>
-          )}
+                Student Portal &amp; Login Information
+                <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
+              </Link>
+            </section>
+          </FadeIn>
         </div>
       </Container>
     </>
