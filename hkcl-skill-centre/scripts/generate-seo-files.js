@@ -23,7 +23,15 @@ const sitemap =
   paths.map((p) => `  <url><loc>${base}${p === '/' ? '/' : p}</loc></url>`).join('\n') +
   '\n</urlset>\n';
 
-const robots = `User-agent: *\nAllow: /\nDisallow: /student-login\n\nSitemap: ${base}/sitemap.xml\n`;
+const robots = `User-agent: *
+Allow: /
+Disallow: /student-login
+Disallow: /secure-admin-portal
+Disallow: /admin
+Disallow: /staff
+
+Sitemap: ${base}/sitemap.xml
+`;
 
 const publicDir = fileURLToPath(new URL('../public/', import.meta.url));
 writeFileSync(publicDir + 'sitemap.xml', sitemap);

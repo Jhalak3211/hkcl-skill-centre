@@ -319,6 +319,34 @@ export function AdmissionProvider({ children }) {
     }
   }, [user]);
 
+  // Restore session from JWT token on mount if user not in state
+  useEffect(() => {
+    const token =
+      sessionStorage.getItem('hkcl_auth_token') ||
+      localStorage.getItem('hkcl_auth_token');
+    if (token && !user) {
+      fetch('/api/auth/student-me', {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data?.success && data?.student) {
+            const restoredUser = {
+              id: data.student.studentId,
+              studentId: data.student.studentId,
+              name: data.student.fullName,
+              phone: data.student.phone,
+              email: data.student.email,
+              verified: true,
+              registeredAt: data.student.createdAt,
+            };
+            setUser(restoredUser);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [user]);
+
   const [savedProfile, setSavedProfile] = useState(() => getStoredProfile());
 
   // Save basic profile details to permanent storage (Personal and address only; NEVER qualifications or uploads)
@@ -529,13 +557,58 @@ export function AdmissionProvider({ children }) {
   }, [persistUserProfile]);
 
   // Sign in / Load profile by Reference ID or Phone
-  const loginUser = useCallback((phoneOrId, name = '') => {
+  const loginUser = useCallback(async (phoneOrId, name = '') => {
     const profile = getStoredProfile();
     const trimmed = (phoneOrId || '').toString().trim();
+
+    // First attempt backend authentication
+    try {
+      const res = await fetch('/api/auth/student-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ identifier: trimmed }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.success && data.student) {
+        if (data.token) {
+          try {
+            sessionStorage.setItem('hkcl_auth_token', data.token);
+            localStorage.setItem('hkcl_auth_token', data.token);
+          } catch {}
+        }
+        const loggedUser = {
+          id: data.student.studentId,
+          studentId: data.student.studentId,
+          name: data.student.fullName || name || 'Student Applicant',
+          phone: data.student.phone,
+          email: data.student.email,
+          verified: true,
+          registeredAt: data.student.createdAt || new Date().toISOString(),
+        };
+        setUser(loggedUser);
+
+        saveRegisteredStudent(loggedUser);
+
+        setApplication((prev) => ({
+          ...prev,
+          id: loggedUser.studentId,
+          personal: {
+            ...prev.personal,
+            fullName: prev.personal.fullName || loggedUser.name,
+            phone: loggedUser.phone,
+            email: prev.personal.email || loggedUser.email,
+          },
+        }));
+
+        return { success: true, user: loggedUser };
+      }
+    } catch (apiErr) {
+      console.warn('Backend student-login unavailable, checking local store:', apiErr);
+    }
+
+    // Fallback lookup in registered students directory
     const isId = trimmed.toUpperCase().startsWith('HKCL');
     const cleanDigits = trimmed.replace(/\D/g, '');
-
-    // Look up in registered students directory
     const list = getRegisteredStudents();
     const existing = isId
       ? list.find((s) => s.studentId === trimmed.toUpperCase())
@@ -621,6 +694,8 @@ export function AdmissionProvider({ children }) {
     setUser(null);
     try {
       sessionStorage.removeItem(STORAGE_USER_KEY);
+      sessionStorage.removeItem('hkcl_auth_token');
+      localStorage.removeItem('hkcl_auth_token');
       localStorage.removeItem(STORAGE_DRAFT_KEY);
       localStorage.removeItem(STORAGE_PROFILE_KEY);
     } catch {

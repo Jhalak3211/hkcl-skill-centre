@@ -249,6 +249,90 @@ export async function staffLogin(req, res) {
 }
 
 /**
+ * GET /api/admin/accept-invite
+ * Validates staff invitation token and returns non-sensitive invite details without consuming token.
+ */
+export async function getStaffInvitation(req, res) {
+  try {
+    const rawToken = req.query.token || req.params.token;
+    const cleanToken = (rawToken || '').toString().trim();
+
+    if (!cleanToken) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invitation token is required.',
+      });
+    }
+
+    const incomingHash = hashToken(cleanToken);
+
+    let staff = null;
+    if (isDbConnected) {
+      try {
+        staff = await Staff.findOne({
+          invitationToken: incomingHash,
+        }).select('name email designation status invitationExpires');
+      } catch (err) {
+        console.warn('DB lookup error:', err.message);
+      }
+    }
+
+    if (!staff) {
+      staff = memoryStaff.find((s) => s.invitationToken === incomingHash);
+    }
+
+    if (!staff) {
+      return res.status(404).json({
+        success: false,
+        error: 'This invitation token is invalid or has already been used.',
+      });
+    }
+
+    if (staff.status === 'active') {
+      return res.status(400).json({
+        success: false,
+        error: 'This invitation has already been accepted and the staff account is active.',
+      });
+    }
+
+    if (staff.status === 'deactivated') {
+      return res.status(403).json({
+        success: false,
+        error: 'This staff account has been deactivated. Please contact your administrator.',
+      });
+    }
+
+    const isExpired = Boolean(
+      staff.invitationExpires && new Date(staff.invitationExpires) <= new Date()
+    );
+
+    if (isExpired) {
+      return res.status(410).json({
+        success: false,
+        isExpired: true,
+        error: 'This invitation has expired. Please request a fresh invitation from your administrator.',
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      valid: true,
+      staff: {
+        name: staff.name,
+        email: staff.email,
+        designation: staff.designation,
+        expiresAt: staff.invitationExpires,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to verify invitation token.',
+    });
+  }
+}
+
+/**
  * POST /api/auth/staff/accept-invite
  * Public endpoint for staff member to accept invitation and set their password.
  */
@@ -304,6 +388,33 @@ export async function acceptStaffInvitation(req, res) {
     }
 
     if (!staff) {
+      // Differentiate between expired token, used token, and invalid token
+      let expiredCheck = null;
+      if (isDbConnected) {
+        try {
+          expiredCheck = await Staff.findOne({ invitationToken: incomingHash });
+        } catch {}
+      }
+      if (!expiredCheck) {
+        expiredCheck = memoryStaff.find((s) => s.invitationToken === incomingHash);
+      }
+
+      if (expiredCheck) {
+        if (expiredCheck.status === 'active') {
+          return res.status(400).json({
+            success: false,
+            error: 'This invitation has already been accepted and your account is active. Please log in directly.',
+          });
+        }
+        if (expiredCheck.invitationExpires && new Date(expiredCheck.invitationExpires) <= new Date()) {
+          return res.status(410).json({
+            success: false,
+            isExpired: true,
+            error: 'This invitation token has expired. Please request a fresh invitation from your administrator.',
+          });
+        }
+      }
+
       return res.status(400).json({
         success: false,
         error:
@@ -642,10 +753,91 @@ export async function inviteStaff(req, res) {
     }
 
     if (existing) {
-      return res.status(409).json({
-        success: false,
-        error: `A staff account with email ${cleanEmail} already exists (Status: ${existing.status}).`,
-      });
+      // 1. If staff account is already active, reject duplicate with 409
+      if (existing.status === 'active') {
+        return res.status(409).json({
+          success: false,
+          code: 'STAFF_ALREADY_ACTIVE',
+          error: `A staff member with email "${cleanEmail}" is already active and registered. Manage their profile or permissions in the staff list.`,
+        });
+      }
+
+      // 2. If staff account is deactivated, reject with 409
+      if (existing.status === 'deactivated') {
+        return res.status(409).json({
+          success: false,
+          code: 'STAFF_DEACTIVATED',
+          error: `A staff account with email "${cleanEmail}" exists but is currently deactivated. Please reactivate their account in the staff directory before re-issuing credentials.`,
+        });
+      }
+
+      // 3. If staff invitation is pending or expired: renew invitation with fresh token
+      if (existing.status === 'pending') {
+        const isExpired = Boolean(
+          existing.invitationExpires && new Date(existing.invitationExpires) <= new Date()
+        );
+
+        // Generate fresh single-use invitation token (hashed at rest with SHA-256)
+        const { rawToken, tokenHash, expires } = generateStaffInvitationToken();
+
+        existing.name = cleanName;
+        existing.phone = cleanPhone;
+        existing.designation = cleanDesignation;
+        if (permissions) existing.permissions = permissions;
+        existing.invitationToken = tokenHash;
+        existing.invitationExpires = expires;
+        existing.invitedBy = req.user?.name || req.admin?.name || 'Administrator';
+        existing.invitedAt = new Date();
+
+        if (isDbConnected && existing.save) {
+          await existing.save();
+        }
+
+        // Dispatch invitation email
+        const emailResult = await sendStaffInvitationEmail({
+          email: cleanEmail,
+          name: cleanName,
+          rawToken,
+          designation: cleanDesignation,
+          invitedBy: existing.invitedBy,
+        });
+
+        await logActivity({
+          action: isExpired ? 'STAFF_INVITATION_EXPIRED_RENEWED' : 'STAFF_INVITATION_UPDATED',
+          category: 'staff',
+          description: isExpired
+            ? `Expired staff invitation for ${cleanName} (${cleanEmail}) renewed by ${existing.invitedBy}.`
+            : `Pending staff invitation for ${cleanName} (${cleanEmail}) updated with fresh token by ${existing.invitedBy}.`,
+          targetId: String(existing._id || existing.id),
+          req,
+          details: { emailResult, isExpired },
+        });
+
+        const statusMessage = emailResult.sent
+          ? (isExpired
+              ? `Expired invitation for ${cleanEmail} has been renewed and dispatched.`
+              : `Pending invitation for ${cleanEmail} updated and a fresh invitation email dispatched.`)
+          : `Staff invitation ${isExpired ? 'renewed' : 'updated'}. Email delivery could not be performed (${emailResult.error || 'email provider issue'}). Use the direct invitation link below.`;
+
+        return res.status(200).json({
+          success: true,
+          isRenewed: true,
+          isExpired,
+          emailSent: Boolean(emailResult.sent),
+          message: statusMessage,
+          staff: {
+            id: existing._id || existing.id,
+            name: existing.name,
+            email: existing.email,
+            phone: existing.phone,
+            designation: existing.designation,
+            status: 'pending',
+            invitedAt: existing.invitedAt,
+          },
+          emailDelivery: emailResult,
+          invitationUrl: emailResult.inviteUrl,
+        });
+      }
     }
 
     // Generate single-use invitation token (hashed at rest)
@@ -677,7 +869,8 @@ export async function inviteStaff(req, res) {
         if (err.code === 11000) {
           return res.status(409).json({
             success: false,
-            error: 'A staff member with this email address already exists.',
+            code: 'STAFF_DUPLICATE_EMAIL',
+            error: `A staff member with email "${cleanEmail}" already exists.`,
           });
         }
         throw err;
@@ -710,11 +903,15 @@ export async function inviteStaff(req, res) {
       details: { emailResult },
     });
 
+    const statusMessage = emailResult.sent
+      ? `Invitation email successfully dispatched to ${cleanEmail}.`
+      : `Staff invitation created. Email delivery could not be performed (${emailResult.error || 'email provider issue'}). Use the direct invitation link below.`;
+
     return res.status(201).json({
       success: true,
-      message: emailResult.sent
-        ? `Invitation email successfully dispatched to ${cleanEmail}.`
-        : `Staff invitation created. Direct link generated for testing/setup.`,
+      isRenewed: false,
+      emailSent: Boolean(emailResult.sent),
+      message: statusMessage,
       staff: {
         id: newStaff._id || newStaff.id,
         name: newStaff.name,
@@ -895,11 +1092,14 @@ export async function resendStaffInvitation(req, res) {
       req,
     });
 
+    const statusMessage = emailResult.sent
+      ? `Fresh invitation email successfully dispatched to ${staff.email}.`
+      : `Fresh invitation token generated, but email delivery could not be performed (${emailResult.error || 'provider issue'}). Copy the direct invitation link below.`;
+
     return res.status(200).json({
       success: true,
-      message: emailResult.sent
-        ? `Fresh invitation sent to ${staff.email}.`
-        : `Fresh invitation link generated for ${staff.email}.`,
+      emailSent: Boolean(emailResult.sent),
+      message: statusMessage,
       invitationUrl: emailResult.inviteUrl,
       emailDelivery: emailResult,
     });

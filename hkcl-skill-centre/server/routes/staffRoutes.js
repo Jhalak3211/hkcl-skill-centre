@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
   getStaffOverview,
+  getStaffApplications,
   getStaffApplicationById,
   approveDocuments,
   requestDocumentCorrections,
@@ -22,6 +23,7 @@ router.use(requireStaffAuth);
 
 // Overview metrics & application listing
 router.get('/overview', getStaffOverview);
+router.get('/applications', getStaffApplications);
 router.get('/applications/:id', getStaffApplicationById);
 
 // Document review decisions

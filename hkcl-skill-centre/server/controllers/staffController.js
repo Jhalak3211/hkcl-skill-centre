@@ -67,7 +67,7 @@ export async function getStaffOverview(req, res) {
       }
     }
 
-    // Calculate metrics
+    // Calculate global metrics
     const metrics = {
       totalApplications: applications.length,
       underReview: applications.filter(
@@ -101,6 +101,44 @@ export async function getStaffOverview(req, res) {
       ).length,
     };
 
+    // Calculate staff-specific workspace metrics (Part 3.C & Part 4)
+    const staffUser = req.user || req.staff;
+    const staffId = String(staffUser?.id || staffUser?._id || '');
+    const staffEmail = (staffUser?.email || '').toLowerCase().trim();
+
+    const isAssignedToUser = (a) => {
+      if (!a.assignedStaff) return false;
+      const aStaffId = String(a.assignedStaff.staffId || '').trim();
+      const aStaffEmail = (a.assignedStaff.email || '').toLowerCase().trim();
+      if (staffId && aStaffId && aStaffId === staffId) return true;
+      if (staffEmail && aStaffEmail && aStaffEmail === staffEmail) return true;
+      return false;
+    };
+
+    const assignedApps = applications.filter(isAssignedToUser);
+
+    const myWorkspaceMetrics = {
+      totalAssignedApplications: assignedApps.length,
+      newApplications: assignedApps.filter(
+        (a) => a.status === 'under_review' || a.status === 'submitted' || a.documentReview?.status === 'pending'
+      ).length,
+      underReview: assignedApps.filter(
+        (a) => a.status === 'under_review' || a.documentReview?.status === 'under_review'
+      ).length,
+      correctionsRequired: assignedApps.filter(
+        (a) => a.status === 'corrections_required' || a.documentReview?.status === 'corrections_required'
+      ).length,
+      documentsApproved: assignedApps.filter(
+        (a) => a.status === 'documents_approved' || a.documentReview?.status === 'approved'
+      ).length,
+      paymentReviewPending: assignedApps.filter(
+        (a) => a.payment?.status === 'submitted'
+      ).length,
+      admitted: assignedApps.filter(
+        (a) => a.status === 'admitted' || a.finalAdmission?.status === 'admitted'
+      ).length,
+    };
+
     // Filter applications if section requested
     let filtered = applications;
     if (section === 'under_review') {
@@ -129,18 +167,167 @@ export async function getStaffOverview(req, res) {
       filtered = applications.filter(
         (a) => a.status === 'rejected' || a.documentReview?.status === 'rejected'
       );
+    } else if (section === 'my_assigned') {
+      filtered = assignedApps;
     }
 
     return res.status(200).json({
       success: true,
       metrics,
+      myWorkspaceMetrics,
       count: filtered.length,
+      assignedCount: assignedApps.length,
       applications: filtered,
+      assignedApplications: assignedApps,
     });
   } catch (error) {
     return res.status(500).json({
       success: false,
       error: error.message || 'Failed to retrieve staff overview.',
+    });
+  }
+}
+
+/**
+ * GET /api/staff/applications
+ * Dedicated paginated & filtered applications query endpoint for Staff Workspace.
+ */
+export async function getStaffApplications(req, res) {
+  try {
+    const {
+      search = '',
+      status = '',
+      assignedOnly = 'false',
+      page = 1,
+      limit = 10,
+      sortBy = 'updatedAt',
+      sortOrder = 'desc',
+    } = req.query;
+
+    const staffUser = req.user || req.staff;
+    const staffId = String(staffUser?.id || staffUser?._id || '');
+    const staffEmail = (staffUser?.email || '').toLowerCase().trim();
+
+    const appMap = new Map();
+
+    // 1. In-memory
+    for (const a of memoryApplications.values()) {
+      if (a.applicationId) appMap.set(a.applicationId, { ...a });
+    }
+
+    // 2. Database
+    if (isDbConnected) {
+      try {
+        const dbApps = await Application.find({}).sort({ updatedAt: -1, createdAt: -1 }).lean();
+        for (const a of dbApps) {
+          if (a.applicationId) appMap.set(a.applicationId, a);
+        }
+      } catch (err) {
+        console.warn('[GetStaffApplications] DB read error:', err.message);
+      }
+    }
+
+    let allApps = Array.from(appMap.values());
+
+    // Populate candidate names if missing
+    for (const a of allApps) {
+      if (!a.personalSnapshot?.fullName && a.studentId) {
+        if (isDbConnected) {
+          try {
+            const student = await Student.findOne({ studentId: a.studentId }).lean();
+            if (student) {
+              a.personalSnapshot = {
+                ...(a.personalSnapshot || {}),
+                fullName: student.fullName || a.personal?.fullName || 'Student Applicant',
+                phone: student.phone || a.personal?.phone || '',
+                email: student.email || a.personal?.email || '',
+              };
+            }
+          } catch {}
+        }
+      }
+    }
+
+    const isAssignedToUser = (a) => {
+      if (!a.assignedStaff) return false;
+      const aStaffId = String(a.assignedStaff.staffId || '').trim();
+      const aStaffEmail = (a.assignedStaff.email || '').toLowerCase().trim();
+      if (staffId && aStaffId && aStaffId === staffId) return true;
+      if (staffEmail && aStaffEmail && aStaffEmail === staffEmail) return true;
+      return false;
+    };
+
+    let filtered = allApps;
+
+    // Filter by assignedOnly if staff role or explicitly requested
+    if (assignedOnly === 'true') {
+      filtered = filtered.filter(isAssignedToUser);
+    }
+
+    // Status filter
+    if (status && status !== 'all') {
+      filtered = filtered.filter(
+        (a) =>
+          a.status === status ||
+          a.documentReview?.status === status ||
+          (status === 'payment_submitted' && a.payment?.status === 'submitted') ||
+          (status === 'payment_verified' && (a.payment?.status === 'verified' || a.payment?.status === 'paid'))
+      );
+    }
+
+    // Search query
+    if (search && search.trim()) {
+      const q = search.trim().toLowerCase();
+      filtered = filtered.filter((a) => {
+        const idMatch = a.applicationId?.toLowerCase().includes(q) || a.studentId?.toLowerCase().includes(q);
+        const nameMatch = a.personalSnapshot?.fullName?.toLowerCase().includes(q) || a.personal?.fullName?.toLowerCase().includes(q);
+        const emailMatch = a.personalSnapshot?.email?.toLowerCase().includes(q) || a.personal?.email?.toLowerCase().includes(q);
+        const phoneMatch = a.personalSnapshot?.phone?.includes(q) || a.personal?.phone?.includes(q);
+        const courseMatch = a.course?.name?.toLowerCase().includes(q) || a.course?.slug?.toLowerCase().includes(q);
+        return idMatch || nameMatch || emailMatch || phoneMatch || courseMatch;
+      });
+    }
+
+    // Sort
+    filtered.sort((a, b) => {
+      const valA = new Date(a[sortBy] || a.createdAt || 0).getTime();
+      const valB = new Date(b[sortBy] || b.createdAt || 0).getTime();
+      return sortOrder === 'asc' ? valA - valB : valB - valA;
+    });
+
+    const parsedPage = Math.max(1, parseInt(page, 10) || 1);
+    const parsedLimit = Math.max(1, Math.min(100, parseInt(limit, 10) || 10));
+    const total = filtered.length;
+    const startIndex = (parsedPage - 1) * parsedLimit;
+    const paginated = filtered.slice(startIndex, startIndex + parsedLimit);
+
+    // Calculate workspace metrics for caller
+    const myAssigned = allApps.filter(isAssignedToUser);
+    const myWorkspaceMetrics = {
+      totalAssignedApplications: myAssigned.length,
+      newApplications: myAssigned.filter((a) => a.status === 'under_review' || a.status === 'submitted').length,
+      underReview: myAssigned.filter((a) => a.status === 'under_review' || a.documentReview?.status === 'under_review').length,
+      correctionsRequired: myAssigned.filter((a) => a.status === 'corrections_required' || a.documentReview?.status === 'corrections_required').length,
+      documentsApproved: myAssigned.filter((a) => a.status === 'documents_approved' || a.documentReview?.status === 'approved').length,
+      paymentReviewPending: myAssigned.filter((a) => a.payment?.status === 'submitted').length,
+      admitted: myAssigned.filter((a) => a.status === 'admitted').length,
+    };
+
+    return res.status(200).json({
+      success: true,
+      applications: paginated,
+      pagination: {
+        total,
+        page: parsedPage,
+        limit: parsedLimit,
+        totalPages: Math.ceil(total / parsedLimit) || 1,
+      },
+      myWorkspaceMetrics,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to query staff applications.',
     });
   }
 }

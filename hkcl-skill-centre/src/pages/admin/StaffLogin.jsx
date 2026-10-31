@@ -83,10 +83,6 @@ export default function StaffLogin() {
               <p className="mt-1 text-xs text-brand-200">
                 Admissions, Documents &amp; Fee Verification Desk • Sirsa
               </p>
-              <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 border border-amber-400/30 text-amber-300 text-[11px] font-semibold uppercase tracking-wider">
-                <ShieldCheck className="h-3.5 w-3.5" />
-                Staff Desk Access
-              </div>
             </div>
 
             {/* Form Section */}
@@ -210,15 +206,6 @@ export default function StaffLogin() {
 
               {/* Security notice & Admin link */}
               <div className="mt-8 pt-6 border-t border-slate-200 text-center space-y-3">
-                <p className="text-xs text-slate-500">
-                  Centre Administrator?{' '}
-                  <Link
-                    to="/admin/login"
-                    className="font-semibold text-brand-700 hover:text-brand-900 underline underline-offset-2"
-                  >
-                    Sign in to Admin Portal
-                  </Link>
-                </p>
                 <p className="text-[11px] text-slate-400">
                   Have an invitation link? Click the link in your email to set up your password and activate your account.
                 </p>

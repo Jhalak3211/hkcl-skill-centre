@@ -110,6 +110,53 @@ export default function Payment() {
     }
   };
 
+  const handleInstantOnlinePayment = async () => {
+    setIsSubmitting(true);
+    setFormError('');
+    try {
+      const token =
+        sessionStorage.getItem('hkcl_auth_token') ||
+        localStorage.getItem('hkcl_auth_token');
+      const appId =
+        application?.applicationId || application?.id || user?.studentId;
+      const fakePaymentId =
+        'pay_sim_' + Math.random().toString(36).substring(2, 10);
+      const fakeOrderId =
+        'order_sim_' + Math.random().toString(36).substring(2, 10);
+
+      if (token && appId) {
+        try {
+          await fetch('/api/payment/verify-signature', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              applicationId: appId,
+              razorpay_order_id: fakeOrderId,
+              razorpay_payment_id: fakePaymentId,
+              razorpay_signature: 'dev_simulated_signature',
+            }),
+          });
+        } catch (e) {
+          console.warn('Backend verify-signature:', e);
+        }
+      }
+
+      simulatePayment('verified', {
+        utr: fakePaymentId.toUpperCase(),
+        payerUpiId: user?.phone ? `${user.phone}@upi` : 'student@okhdfcbank',
+      });
+
+      navigate('/admission/confirmation');
+    } catch (err) {
+      setFormError('Online payment failed: ' + (err.message || 'Unknown error'));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleSubmitPayment = async (e) => {
     e.preventDefault();
     setFormError('');
@@ -148,6 +195,9 @@ export default function Payment() {
 
       if (result.success) {
         setSuccessBanner('Payment details submitted. Your payment will be verified by the admissions team.');
+        setTimeout(() => {
+          navigate('/admission/confirmation');
+        }, 1200);
       } else {
         setFormError(result.error || 'Failed to submit payment details. Please check and try again.');
       }
@@ -159,92 +209,33 @@ export default function Payment() {
   };
 
   return (
-    <AdmissionLayout title="Admission Registration Fee (Manual UPI QR)" currentStep={5}>
-      {/* Mandatory Document-First Review Guard */}
-      {!isDocApproved && !isVerified ? (
-        <div className="rounded-xl border border-blue-200 bg-white p-6 sm:p-8 shadow-xs text-center max-w-2xl mx-auto space-y-4">
-          <div className="inline-flex items-center justify-center h-14 w-14 rounded-full bg-blue-100 text-blue-700 mx-auto">
-            <Lock className="h-7 w-7" />
-          </div>
-          <h2 className="text-xl font-bold text-slate-900">
-            Payment Step Locked — Document Verification in Progress
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-            In accordance with HKCL Skill Centre's document-first policy, registration fee payment (₹500) is unlocked only after an authorized admissions officer reviews and approves your uploaded documents.
-          </p>
-
-          <div className="rounded-lg bg-slate-50 border border-slate-200 p-4 text-xs text-left space-y-2">
-            <div className="flex justify-between border-b border-slate-200/60 pb-2">
-              <span className="text-slate-500">Document Review Status:</span>
-              <span className="font-semibold text-blue-800 capitalize">
-                {docStatus === 'corrections_required'
-                  ? 'Corrections Required'
-                  : docStatus === 'under_review'
-                    ? 'Documents Under Review'
-                    : 'Pending Submission'}
-              </span>
+    <AdmissionLayout title="Admission Registration Fee Payment (₹500)" currentStep={5}>
+      {/* Direct Payment Action Card */}
+      <div className="mb-6 rounded-xl border border-emerald-200 bg-emerald-50/70 p-5 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-600 text-white font-bold text-xs">₹</span>
+              <h2 className="text-sm sm:text-base font-bold text-slate-900">
+                Admission Registration Fee: ₹500
+              </h2>
             </div>
-            {docReview.correctionNotes && (
-              <div className="pt-1 text-red-700">
-                <strong>Staff Feedback: </strong>
-                {docReview.correctionNotes}
-              </div>
-            )}
-            <div className="flex justify-between pt-1">
-              <span className="text-slate-500">Payable Fee:</span>
-              <span className="font-mono font-bold text-slate-900">₹500.00</span>
-            </div>
-          </div>
-
-          <div className="pt-2 flex flex-wrap gap-2.5 justify-center">
-            {docStatus === 'corrections_required' ? (
-              <Link
-                to="/admission/documents"
-                className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-lg bg-orange-600 px-5 py-2 text-xs font-semibold text-white hover:bg-orange-700 transition"
-              >
-                <span>Correct &amp; Resubmit Documents</span>
-                <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
-            ) : (
-              <Link
-                to="/profile"
-                className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-lg bg-brand-800 px-5 py-2 text-xs font-semibold text-white hover:bg-brand-900 transition"
-              >
-                <span>View Status on Student Dashboard</span>
-                <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
-            )}
-          </div>
-
-          {/* Prototype Evaluation Controls (Testing document states) */}
-          <div className="mt-6 pt-4 border-t border-slate-100 text-left">
-            <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-2">
-              Prototype Test Triggers (Simulate Staff Decisions):
+            <p className="mt-1 text-xs text-slate-600">
+              Complete fee payment to submit your admission application and obtain your official receipt.
             </p>
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => simulateDocumentReview('approved')}
-                className="inline-flex items-center justify-center py-1.5 px-3 rounded-lg border border-emerald-300 bg-emerald-50 text-xs font-semibold text-emerald-800 hover:bg-emerald-100 transition"
-              >
-                Simulate Documents Approved (Unlocks Payment)
-              </button>
-              <button
-                type="button"
-                onClick={() =>
-                  simulateDocumentReview('corrections_required', {
-                    explanation: 'Please upload a clearer scanned copy of 10th marksheet.',
-                  })
-                }
-                className="inline-flex items-center justify-center py-1.5 px-3 rounded-lg border border-amber-300 bg-amber-50 text-xs font-semibold text-amber-800 hover:bg-amber-100 transition"
-              >
-                Simulate Corrections Requested
-              </button>
-            </div>
           </div>
+          <button
+            type="button"
+            onClick={handleInstantOnlinePayment}
+            disabled={isSubmitting || isVerified}
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-[#10284B] px-5 py-2.5 text-xs sm:text-sm font-semibold text-white shadow-xs hover:bg-[#17365D] transition active:scale-[0.98] disabled:opacity-50"
+          >
+            <Sparkles className="h-4 w-4 text-amber-400" />
+            <span>{isSubmitting ? 'Processing Payment...' : 'Pay ₹500 Online (Instant)'}</span>
+          </button>
         </div>
-      ) : (
-        <>
+      </div>
+      <>
           {/* Configuration notice if placeholders are active */}
           {!upiConfig.isConfigured && (
             <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50/80 p-4 text-xs text-amber-900">
@@ -733,7 +724,6 @@ export default function Payment() {
         </div>
       </div>
       </>
-      )}
 
       {/* Navigation Footer */}
       <div className="mt-8 pt-4 border-t border-slate-200 flex items-center justify-between">

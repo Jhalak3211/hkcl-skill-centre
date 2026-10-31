@@ -118,10 +118,11 @@ export async function createAdvertisement(req, res) {
       startDate,
       endDate,
       displayOrder,
+      order,
     } = req.body;
 
     const cleanTitle = (title || '').toString().trim();
-    const cleanImg = (imageUrl || '').toString().trim();
+    let cleanImg = (imageUrl || '').toString().trim();
 
     if (!cleanTitle) {
       return res.status(400).json({
@@ -133,9 +134,16 @@ export async function createAdvertisement(req, res) {
     if (!cleanImg) {
       return res.status(400).json({
         success: false,
-        error: 'Advertisement image or banner URL is required.',
+        error: 'Advertisement image banner is required. Please upload an image or provide a URL.',
       });
     }
+
+    // Auto-prefix https:// if user entered domain without protocol
+    if (!cleanImg.startsWith('http://') && !cleanImg.startsWith('https://') && !cleanImg.startsWith('data:') && !cleanImg.startsWith('/')) {
+      cleanImg = `https://${cleanImg}`;
+    }
+
+    const orderValue = displayOrder !== undefined ? displayOrder : order;
 
     const adData = {
       title: cleanTitle,
@@ -149,7 +157,7 @@ export async function createAdvertisement(req, res) {
         : 'published',
       startDate: startDate ? new Date(startDate) : null,
       endDate: endDate ? new Date(endDate) : null,
-      displayOrder: Number(displayOrder) || 0,
+      displayOrder: Number(orderValue) || 0,
       createdBy: req.user?.name || req.admin?.name || 'Administrator',
     };
 
@@ -205,6 +213,7 @@ export async function updateAdvertisement(req, res) {
       startDate,
       endDate,
       displayOrder,
+      order,
     } = req.body;
 
     let ad = null;
@@ -220,14 +229,21 @@ export async function updateAdvertisement(req, res) {
 
     if (title !== undefined) ad.title = title.trim();
     if (description !== undefined) ad.description = description.trim();
-    if (imageUrl !== undefined) ad.imageUrl = imageUrl.trim();
+    if (imageUrl !== undefined) {
+      let clean = imageUrl.trim();
+      if (clean && !clean.startsWith('http://') && !clean.startsWith('https://') && !clean.startsWith('data:') && !clean.startsWith('/')) {
+        clean = `https://${clean}`;
+      }
+      ad.imageUrl = clean;
+    }
     if (ctaText !== undefined) ad.ctaText = ctaText.trim();
     if (ctaUrl !== undefined) ad.ctaUrl = ctaUrl.trim();
     if (badge !== undefined) ad.badge = badge.trim();
     if (status !== undefined) ad.status = status;
     if (startDate !== undefined) ad.startDate = startDate ? new Date(startDate) : null;
     if (endDate !== undefined) ad.endDate = endDate ? new Date(endDate) : null;
-    if (displayOrder !== undefined) ad.displayOrder = Number(displayOrder);
+    const orderVal = displayOrder !== undefined ? displayOrder : order;
+    if (orderVal !== undefined) ad.displayOrder = Number(orderVal) || 0;
 
     if (isDbConnected && ad.save) {
       await ad.save();

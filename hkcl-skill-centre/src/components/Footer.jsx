@@ -202,15 +202,6 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} {siteConfig.name}. All rights
             reserved.
           </p>
-
-          <div className="flex items-center gap-4 text-xs">
-            <Link
-              to="/staff/dashboard"
-              className="text-brand-300 hover:text-white transition-colors"
-            >
-              Staff Portal
-            </Link>
-          </div>
         </Container>
       </div>
     </footer>

@@ -1,18 +1,15 @@
+import './config/env.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// Load .env from server directory or root directory
-dotenv.config({ path: path.resolve(__dirname, '.env') });
-dotenv.config(); // fallback to current working directory if exists
 
 import express from 'express';
 import cors from 'cors';
 import { connectDB } from './config/db.js';
 import { seedInitialAdmin } from './config/seedAdmin.js';
+import { getEmailDiagnostics } from './services/emailService.js';
 
 import authRoutes from './routes/authRoutes.js';
 import profileRoutes from './routes/profileRoutes.js';
@@ -45,12 +42,27 @@ app.use(
 );
 app.use(express.urlencoded({ limit: '20mb', extended: true }));
 
-// Connect to MongoDB, run duplicate audit, and auto-seed admin
+// Connect to MongoDB, run duplicate audit, and auto-seed admin & default advertisement
 connectDB().then(() => {
   seedInitialAdmin().catch((err) => console.warn('[SeedAdmin] Notice:', err.message));
   import('./controllers/authController.js')
     .then(({ auditExistingDuplicates }) => auditExistingDuplicates())
     .catch(() => {});
+  import('./models/Advertisement.js').then(async ({ default: Advertisement }) => {
+    const count = await Advertisement.countDocuments().catch(() => 0);
+    if (count === 0) {
+      await Advertisement.create({
+        title: 'Admissions Open 2026: HS-CIT & Advanced IT Programs',
+        description: 'Join Haryana Knowledge Corporation Limited certified computer and skill development programs at our authorized Sirsa centre. Hands-on practical training with government-recognized certification.',
+        imageUrl: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80',
+        ctaText: 'Apply for Admission',
+        ctaUrl: '/admission/personal-details',
+        badge: 'New Batch 2026',
+        status: 'published',
+        displayOrder: 0,
+      }).catch(() => {});
+    }
+  }).catch(() => {});
 });
 
 // API Routes
@@ -110,7 +122,10 @@ if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
     console.log(`[HKCL Server] Running on http://localhost:${PORT}`);
     console.log(`[HKCL Server] Accepting origins: ${CLIENT_ORIGIN}`);
+    const emailDiag = getEmailDiagnostics();
+    console.log(`[HKCL Server] Email Service Configured: ${emailDiag.isConfigured} (Key present: ${emailDiag.apiKeyPresent}, valid: ${emailDiag.apiKeyFormatValid}, prefix: ${emailDiag.keyPrefix}, from: "${emailDiag.fromAddress}")`);
   });
 }
 
+// Auto-reloaded configuration
 export default app;

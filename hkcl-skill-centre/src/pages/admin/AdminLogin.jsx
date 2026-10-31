@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { ShieldAlert, Lock, Mail, Eye, EyeOff, AlertCircle, ArrowRight, CheckCircle2 } from 'lucide-react';
-import Container from '../../components/Container.jsx';
+import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import Seo from '../../components/Seo.jsx';
 import { setAdminSession, isAdminAuthenticated } from '../../utils/auth.js';
 
@@ -62,58 +61,54 @@ export default function AdminLogin() {
   return (
     <>
       <Seo
-        title="Admin Login • HKCL Skill Centre"
-        description="Authorised Administrator access for HKCL Skill Centre Admission and Staff Management Portal."
+        title="Admin Sign In • HKCL Skill Centre"
+        description="Administrative access for HKCL Skill Centre Portal."
+        path="/admin/login"
+        noindex={true}
       />
 
-      <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-50">
-        <div className="w-full max-w-md">
-          {/* Card Container */}
-          <div className="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
-            {/* Header Banner */}
-            <div className="bg-brand-950 p-6 sm:p-8 text-center relative border-b border-brand-900">
-              <div className="inline-flex p-3 rounded-2xl bg-white shadow-md mb-4">
-                <img src="/images/logo.png" alt="HKCL Logo" className="h-12 w-12 object-contain" />
+      <div className="min-h-screen bg-[#F5F7FA] flex flex-col items-center justify-center p-4 sm:p-6">
+        <div className="w-full max-w-[400px]">
+          {/* Main Login Card */}
+          <div className="bg-white rounded-[14px] border border-slate-200/80 shadow-[0_4px_20px_rgba(0,0,0,0.06)] overflow-hidden">
+            {/* Header: Compact dark navy banner */}
+            <div className="bg-[#10284B] px-6 py-5 text-center border-b border-[#0d213f]">
+              <div className="inline-flex p-1.5 rounded-xl bg-white shadow-xs mb-2.5">
+                <img src="/images/logo.png" alt="HKCL Logo" className="h-8 w-8 object-contain" />
               </div>
-              <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-                Centre Administration
+              <h1 className="text-lg font-semibold text-white tracking-tight leading-snug">
+                Admin Sign In
               </h1>
-              <p className="mt-1 text-xs text-brand-200">
-                HKCL Skill Centre • Barnala Road, Sirsa
+              <p className="text-xs text-slate-300 mt-0.5">
+                HKCL Skill Centre
               </p>
-              <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/20 border border-red-500/30 text-red-300 text-[11px] font-semibold uppercase tracking-wider">
-                <ShieldAlert className="h-3.5 w-3.5" />
-                Restricted Admin Access
-              </div>
             </div>
 
-            {/* Form Section */}
-            <div className="p-6 sm:p-8">
+            {/* Login Form Section */}
+            <div className="p-6">
               {error && (
                 <div
                   role="alert"
-                  className="mb-6 flex items-start gap-3 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-sm animate-in fade-in"
+                  className="mb-4 flex items-start gap-2.5 p-3 rounded-lg bg-red-50 border border-red-200/80 text-red-700 text-xs animate-in fade-in"
                 >
-                  <AlertCircle className="h-5 w-5 text-red-600 shrink-0 mt-0.5" />
-                  <div className="flex-1">
-                    <p className="font-semibold text-red-900">Authentication Failed</p>
-                    <p className="text-xs mt-0.5">{error}</p>
-                  </div>
+                  <AlertCircle className="h-4 w-4 text-red-500 shrink-0 mt-0.5" />
+                  <span className="leading-snug">{error}</span>
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Email / Username Field */}
                 <div>
                   <label
                     htmlFor="admin-identifier"
-                    className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5"
+                    className="block text-xs font-medium text-slate-700 mb-1.5"
                   >
                     Email or Username
                   </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <div className="relative flex items-center">
+                    <span className="absolute left-3 text-slate-400 pointer-events-none">
                       <Mail className="h-4 w-4" />
-                    </div>
+                    </span>
                     <input
                       id="admin-identifier"
                       type="text"
@@ -122,22 +117,23 @@ export default function AdminLogin() {
                       value={identifier}
                       onChange={(e) => setIdentifier(e.target.value)}
                       placeholder="admin@hkcl.in"
-                      className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-300 bg-white text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition"
+                      className="h-[44px] w-full pl-9 pr-3.5 rounded-lg border border-slate-200 bg-white text-slate-900 text-sm placeholder:text-slate-400 focus:outline-none focus:border-[#10284B] focus:ring-1 focus:ring-[#10284B] transition-colors"
                     />
                   </div>
                 </div>
 
+                {/* Password Field */}
                 <div>
                   <label
                     htmlFor="admin-password"
-                    className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5"
+                    className="block text-xs font-medium text-slate-700 mb-1.5"
                   >
                     Password
                   </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <div className="relative flex items-center">
+                    <span className="absolute left-3 text-slate-400 pointer-events-none">
                       <Lock className="h-4 w-4" />
-                    </div>
+                    </span>
                     <input
                       id="admin-password"
                       type={showPassword ? 'text' : 'password'}
@@ -146,12 +142,12 @@ export default function AdminLogin() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Enter administrator password"
-                      className="w-full pl-10 pr-11 py-2.5 rounded-lg border border-slate-300 bg-white text-slate-900 text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition"
+                      className="h-[44px] w-full pl-9 pr-10 rounded-lg border border-slate-200 bg-white text-slate-900 text-sm placeholder:text-slate-400 focus:outline-none focus:border-[#10284B] focus:ring-1 focus:ring-[#10284B] transition-colors"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition"
+                      className="absolute right-3 text-slate-400 hover:text-slate-600 transition-colors p-1"
                       aria-label={showPassword ? 'Hide password' : 'Show password'}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -159,54 +155,55 @@ export default function AdminLogin() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between">
-                  <label className="flex items-center gap-2 cursor-pointer">
+                {/* Remember Session Checkbox */}
+                <div className="pt-0.5">
+                  <label className="inline-flex items-center gap-2 cursor-pointer select-none">
                     <input
                       type="checkbox"
                       checked={remember}
                       onChange={(e) => setRemember(e.target.checked)}
-                      className="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500"
+                      className="h-3.5 w-3.5 rounded border-slate-300 text-[#10284B] focus:ring-[#10284B]"
                     />
-                    <span className="text-xs text-slate-600">Remember session on this device</span>
+                    <span className="text-xs text-slate-500">Remember session</span>
                   </label>
                 </div>
 
+                {/* Submit Button */}
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-brand-900 text-white font-semibold text-sm hover:bg-brand-950 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 transition shadow-md disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="h-[46px] w-full inline-flex items-center justify-center gap-2 rounded-lg bg-[#10284B] text-white text-sm font-medium hover:bg-[#0c1f3a] focus:outline-none focus:ring-2 focus:ring-[#10284B] focus:ring-offset-2 transition-all shadow-xs disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {loading ? (
                     <>
-                      <span className="inline-block h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
-                      <span>Authenticating...</span>
+                      <span className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                      <span>Signing in...</span>
                     </>
                   ) : (
-                    <>
-                      <span>Sign In to Admin Portal</span>
-                      <ArrowRight className="h-4 w-4" />
-                    </>
+                    <span>Sign In</span>
                   )}
                 </button>
               </form>
 
-              {/* Security notice & Staff link */}
-              <div className="mt-8 pt-6 border-t border-slate-200 text-center space-y-3">
+              {/* Card Footer: Subtle divider and Staff link */}
+              <div className="mt-5 pt-4 border-t border-slate-100 text-center">
                 <p className="text-xs text-slate-500">
-                  Admissions staff member?{' '}
+                  Staff member?{' '}
                   <Link
                     to="/staff/login"
-                    className="font-semibold text-brand-700 hover:text-brand-900 underline underline-offset-2"
+                    className="font-medium text-[#10284B] hover:underline underline-offset-2"
                   >
-                    Go to Staff Login
+                    Staff Login
                   </Link>
-                </p>
-                <p className="text-[11px] text-slate-400">
-                  Authorised personnel only. All access events and review actions are cryptographically logged.
                 </p>
               </div>
             </div>
           </div>
+
+          {/* Page Footer: Muted copyright line directly below card */}
+          <p className="mt-4 text-center text-xs text-slate-400">
+            &copy; 2026 HKCL Skill Centre
+          </p>
         </div>
       </div>
     </>

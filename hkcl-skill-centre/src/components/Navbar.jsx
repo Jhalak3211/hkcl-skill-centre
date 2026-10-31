@@ -66,21 +66,30 @@ export default function Navbar() {
             </nav>
 
             <div className="flex items-center gap-3 pl-2 border-l border-slate-200">
-              {/* Submitted application / Profile link */}
-              {isSubmitted && (
+              {/* Student Portal / Login */}
+              {user?.studentId ? (
                 <NavLink
-                  to="/profile"
+                  to="/admission/dashboard"
                   className={({ isActive }) =>
                     `inline-flex min-h-10 items-center gap-2 rounded-lg border px-3.5 py-2 text-xs sm:text-sm font-medium transition ${
                       isActive
-                        ? 'border-brand-800 bg-brand-50 text-brand-900 font-semibold'
-                        : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
+                        ? 'border-[#10284B] bg-[#10284B]/10 text-[#10284B] font-semibold'
+                        : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'
                     }`
                   }
-                  title="View my application & receipt"
+                  title="Student Portal Dashboard"
+                >
+                  <User className="h-4 w-4 text-[#10284B]" />
+                  <span>Student Dashboard</span>
+                </NavLink>
+              ) : (
+                <NavLink
+                  to="/admission/login"
+                  className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs sm:text-sm font-medium text-slate-700 hover:border-slate-300 hover:bg-slate-50 transition"
+                  title="Student Sign In"
                 >
                   <User className="h-4 w-4 text-slate-500" />
-                  <span>My Application</span>
+                  <span>Student Login</span>
                 </NavLink>
               )}
 
@@ -149,20 +158,31 @@ export default function Navbar() {
                 </NavLink>
               ))}
 
-              {isSubmitted && (
-                <div className="mt-2 pt-3 border-t border-slate-100 flex flex-col gap-2">
+              <div className="mt-2 pt-3 border-t border-slate-100 flex flex-col gap-2">
+                {user?.studentId ? (
                   <NavLink
-                    to="/profile"
+                    to="/admission/dashboard"
+                    className="flex min-h-11 items-center justify-between rounded-lg bg-slate-50 px-3.5 py-2 text-sm font-semibold text-slate-800"
+                  >
+                    <span className="flex items-center gap-2">
+                      <User className="h-4 w-4 text-[#10284B]" />
+                      <span>Student Dashboard</span>
+                    </span>
+                    <span className="text-slate-400">→</span>
+                  </NavLink>
+                ) : (
+                  <NavLink
+                    to="/admission/login"
                     className="flex min-h-11 items-center justify-between rounded-lg bg-slate-50 px-3.5 py-2 text-sm font-semibold text-slate-800"
                   >
                     <span className="flex items-center gap-2">
                       <User className="h-4 w-4 text-slate-500" />
-                      <span>My Application</span>
+                      <span>Student Login</span>
                     </span>
                     <span className="text-slate-400">→</span>
                   </NavLink>
-                </div>
-              )}
+                )}
+              </div>
 
               {hasDraft && (
                 <div className="mt-2 pt-3 border-t border-slate-100 flex flex-col gap-2">

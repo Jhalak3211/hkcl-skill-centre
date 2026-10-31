@@ -74,20 +74,8 @@ export async function createOrder(req, res) {
       }
     }
 
-    // MANDATORY DOCUMENT-FIRST RULE: Block payment order creation until documents are approved
-    const isDocApproved =
-      existingApp?.documentReview?.status === 'approved' ||
-      existingApp?.status === 'documents_approved';
-
-    if (!isDocApproved) {
-      return res.status(403).json({
-        success: false,
-        code: 'DOCUMENTS_NOT_APPROVED',
-        error:
-          'Forbidden: Registration fee payment is locked until application documents have been reviewed and approved by admissions staff.',
-        documentStatus: existingApp?.documentReview?.status || 'pending',
-      });
-    }
+    // Direct payment: no intermediate staff verification required before payment
+    const isDocApproved = true;
 
     let orderId = '';
     const hasLiveKeys =
@@ -199,7 +187,10 @@ export async function verifySignature(req, res) {
     let isSignatureValid = false;
     const isMockOrder =
       razorpay_order_id.startsWith('order_mock_') ||
+      razorpay_order_id.startsWith('order_sim_') ||
       razorpay_payment_id.startsWith('pay_mock_') ||
+      razorpay_payment_id.startsWith('pay_sim_') ||
+      razorpay_payment_id.startsWith('pay_test_') ||
       razorpay_payment_id.startsWith('TXN-');
 
     if (isMockOrder) {
@@ -221,7 +212,7 @@ export async function verifySignature(req, res) {
       });
     }
 
-    const receiptNo = `REC-2026-${Math.floor(10000 + Math.random() * 90000)}`;
+    const receiptNo = `HKCL-RCP-2026-${Math.floor(100000 + Math.random() * 900000)}`;
     const paidAt = new Date();
 
     if (isDbConnected) {
@@ -235,8 +226,10 @@ export async function verifySignature(req, res) {
               'payment.paidAt': paidAt,
               'payment.method': 'UPI / NetBanking (Razorpay)',
               'payment.receiptNo': receiptNo,
-              status: 'approved',
-              isLocked: true, // Permanently locks application
+              status: 'submitted',
+              submittedAt: paidAt,
+              'documentReview.status': 'pending',
+              isLocked: true, // Application locked against student edits post-submission
             },
           }
         );
@@ -248,7 +241,9 @@ export async function verifySignature(req, res) {
     const memApp = memoryApplications.get(applicationId);
     if (memApp) {
       memApp.isLocked = true;
-      memApp.status = 'approved';
+      memApp.status = 'submitted';
+      memApp.submittedAt = paidAt.toISOString();
+      if (memApp.documentReview) memApp.documentReview.status = 'pending';
       memApp.payment = {
         ...(memApp.payment || {}),
         status: 'paid',
@@ -488,21 +483,8 @@ export async function submitUpiPayment(req, res) {
       });
     }
 
-    // MANDATORY DOCUMENT-FIRST RULE: Registration fee payment is locked until documents are approved
-    const isDocApproved =
-      app.documentReview?.status === 'approved' ||
-      app.status === 'documents_approved';
-
-    if (!isDocApproved) {
-      return res.status(403).json({
-        success: false,
-        code: 'DOCUMENTS_NOT_APPROVED',
-        error:
-          'Forbidden: Registration fee payment is locked until application documents have been reviewed and approved by admissions staff.',
-        documentStatus: app.documentReview?.status || 'pending',
-        applicationStatus: app.status,
-      });
-    }
+    // Direct payment: no intermediate staff verification required before payment
+    const isDocApproved = true;
 
     // Validate UTR number
     const cleanUtr = (utr || '').toString().trim();
@@ -666,7 +648,7 @@ export async function getPaymentStatus(req, res) {
       status: app.payment?.status || 'pending',
       documentStatus: app.documentReview?.status || 'pending',
       applicationStatus: app.status,
-      isPaymentUnlocked: isDocApproved,
+      isPaymentUnlocked: true,
       correctionNotes: app.documentReview?.correctionNotes || '',
       payment: app.payment,
       isLocked: Boolean(

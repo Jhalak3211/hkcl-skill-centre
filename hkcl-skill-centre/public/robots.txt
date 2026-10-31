@@ -1,5 +1,8 @@
 User-agent: *
 Allow: /
 Disallow: /student-login
+Disallow: /secure-admin-portal
+Disallow: /admin
+Disallow: /staff
 
 Sitemap: https://www.example.com/sitemap.xml

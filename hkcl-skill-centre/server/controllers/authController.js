@@ -609,3 +609,150 @@ export async function findReferenceId(req, res) {
     });
   }
 }
+
+
+/**
+ * POST /api/auth/student-login
+ * Direct / passwordless student login by Student Reference ID, Mobile Number, or Email.
+ */
+export async function studentLogin(req, res) {
+  try {
+    const { identifier } = req.body;
+    const cleanId = (identifier || '').toString().trim();
+
+    if (!cleanId) {
+      return res.status(400).json({
+        success: false,
+        error: 'Please enter your Student Reference ID (e.g. HKCL-2026-482910), registered mobile number, or email.',
+      });
+    }
+
+    const isId = /^HKCL/i.test(cleanId);
+    const isMobile = /^[6-9]\d{9}$/.test(cleanId.replace(/\D/g, ''));
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanId.toLowerCase());
+
+    let student = null;
+    if (isDbConnected) {
+      try {
+        if (isId) {
+          student = await Student.findOne({ studentId: cleanId.toUpperCase() });
+        } else if (isMobile) {
+          student = await Student.findOne({ phone: cleanId.replace(/\D/g, '') });
+        } else if (isEmail) {
+          student = await Student.findOne({ email: cleanId.toLowerCase() });
+        } else {
+          student = await Student.findOne({
+            $or: [
+              { studentId: cleanId.toUpperCase() },
+              { phone: cleanId.replace(/\D/g, '') },
+              { email: cleanId.toLowerCase() },
+            ],
+          });
+        }
+      } catch (err) {
+        console.warn('DB studentLogin lookup error:', err.message);
+      }
+    }
+
+    if (!student) {
+      student = memoryStudents.find((s) => {
+        if (isId && s.studentId.toUpperCase() === cleanId.toUpperCase()) return true;
+        if (isMobile && s.phone === cleanId.replace(/\D/g, '')) return true;
+        if (isEmail && (s.email || '').toLowerCase() === cleanId.toLowerCase()) return true;
+        return (
+          s.studentId.toUpperCase() === cleanId.toUpperCase() ||
+          s.phone === cleanId.replace(/\D/g, '') ||
+          (s.email || '').toLowerCase() === cleanId.toLowerCase()
+        );
+      });
+    }
+
+    if (!student) {
+      return res.status(404).json({
+        success: false,
+        code: 'STUDENT_NOT_FOUND',
+        error: 'No student account was found with the provided details. Please check your credentials or register.',
+      });
+    }
+
+    const tokenPayload = {
+      studentId: student.studentId,
+      phone: student.phone,
+      email: student.email,
+      role: 'student',
+      isEmailVerified: Boolean(student.isEmailVerified),
+    };
+    const sessionToken = jwt.sign(tokenPayload, getJwtSecret(), { expiresIn: '7d' });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Student sign-in successful.',
+      token: sessionToken,
+      student: {
+        studentId: student.studentId,
+        fullName: student.fullName,
+        phone: student.phone,
+        email: student.email,
+        dob: student.dob,
+        gender: student.gender,
+        fatherName: student.fatherName,
+        motherName: student.motherName,
+        address: student.address,
+        isEmailVerified: Boolean(student.isEmailVerified),
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error.message || 'Student login failed.',
+    });
+  }
+}
+
+/**
+ * GET /api/auth/student-me
+ * Retrieves current authenticated student record from JWT session.
+ */
+export async function getStudentMe(req, res) {
+  try {
+    const studentId = req.student?.studentId;
+    if (!studentId) {
+      return res.status(401).json({ success: false, error: 'Unauthorized: Student session expired.' });
+    }
+
+    let student = null;
+    if (isDbConnected) {
+      try {
+        student = await Student.findOne({ studentId });
+      } catch {}
+    }
+    if (!student) {
+      student = memoryStudents.find((s) => s.studentId === studentId);
+    }
+
+    if (!student) {
+      return res.status(404).json({ success: false, error: 'Student record not found.' });
+    }
+
+    return res.status(200).json({
+      success: true,
+      student: {
+        studentId: student.studentId,
+        fullName: student.fullName,
+        phone: student.phone,
+        email: student.email,
+        dob: student.dob,
+        gender: student.gender,
+        fatherName: student.fatherName,
+        motherName: student.motherName,
+        address: student.address,
+        isEmailVerified: Boolean(student.isEmailVerified),
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to fetch student session.',
+    });
+  }
+}

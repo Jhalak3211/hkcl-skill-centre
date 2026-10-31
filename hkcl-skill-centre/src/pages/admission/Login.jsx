@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   ArrowRight,
   Sparkles,
@@ -15,14 +15,16 @@ import { useAdmission } from '../../context/AdmissionContext.jsx';
 
 export default function Login() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get('redirect') || '/admission/dashboard';
   const { loginWithOtp, findStudentByPhone, user } = useAdmission();
 
-  // If already logged in, redirect to profile
+  // If already logged in, redirect
   useEffect(() => {
     if (user?.studentId) {
-      navigate('/profile');
+      navigate(redirectTo);
     }
-  }, [user, navigate]);
+  }, [user, navigate, redirectTo]);
 
   // Mode: 'login' | 'find_id'
   const [activeTab, setActiveTab] = useState('login');
@@ -59,27 +61,37 @@ export default function Login() {
     return true;
   };
 
-  const handleSignIn = (e) => {
+  const handleSignIn = async (e) => {
     e.preventDefault();
     if (!validateLoginInput()) return;
 
     setIsLoading(true);
     setLoginErrors({});
 
-    setTimeout(() => {
-      loginWithOtp(loginPhoneOrId.trim());
+    try {
+      const res = await loginWithOtp(loginPhoneOrId.trim());
       setIsLoading(false);
-      navigate('/profile');
-    }, 200);
+      if (res && res.success) {
+        navigate(redirectTo);
+      } else {
+        setLoginErrors({
+          identifier: res?.error || 'Invalid credentials or account not found.',
+        });
+      }
+    } catch {
+      setIsLoading(false);
+      navigate(redirectTo);
+    }
   };
 
-  const handleDemoSignIn = () => {
+  const handleDemoSignIn = async () => {
     setIsLoading(true);
-    setTimeout(() => {
-      loginWithOtp('9812345678', 'Rahul Sharma');
+    try {
+      await loginWithOtp('9812345678', 'Rahul Sharma');
+    } finally {
       setIsLoading(false);
-      navigate('/profile');
-    }, 150);
+      navigate(redirectTo);
+    }
   };
 
   // ---------------------------------------------------------------------------
@@ -123,10 +135,10 @@ export default function Login() {
     }
   };
 
-  const handleLoginWithRecoveredId = () => {
+  const handleLoginWithRecoveredId = async () => {
     if (!recoveredStudent) return;
-    loginWithOtp(recoveredStudent.studentId, recoveredStudent.fullName);
-    navigate('/profile');
+    await loginWithOtp(recoveredStudent.studentId, recoveredStudent.fullName);
+    navigate(redirectTo);
   };
 
   return (

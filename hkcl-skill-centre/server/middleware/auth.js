@@ -198,6 +198,10 @@ export async function requireStaffAuth(req, res, next) {
  */
 export async function requireAdminAuth(req, res, next) {
   try {
+    if (req.admin && req.admin.role === 'admin') {
+      return next();
+    }
+
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({

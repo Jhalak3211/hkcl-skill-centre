@@ -59,16 +59,11 @@ export default function ReviewApplication() {
     setIsSubmitting(true);
     try {
       await submitApplication();
+    } catch (e) {
+      console.warn('Draft sync error:', e);
+    } finally {
       setIsSubmitting(false);
-      navigate('/profile', {
-        state: {
-          submittedNotice:
-            'Application submitted successfully! Your documents are currently under review. Fee payment will be unlocked after staff approval.',
-        },
-      });
-    } catch {
-      setIsSubmitting(false);
-      navigate('/profile');
+      navigate('/admission/payment');
     }
   };
 
@@ -227,15 +222,14 @@ export default function ReviewApplication() {
           </div>
         ) : (
           <>
-            {/* Document-First Review Policy Notice */}
-            <div className="rounded-xl border border-blue-200 bg-blue-50/80 p-4 text-xs text-blue-900">
-              <p className="font-semibold text-blue-950 flex items-center gap-1.5">
-                <FileText className="h-4 w-4 text-blue-700 shrink-0" />
-                Document-First Admission Verification Policy
+            {/* Application Ready for Payment Notice */}
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-xs text-slate-700">
+              <p className="font-semibold text-slate-900 flex items-center gap-1.5">
+                <FileText className="h-4 w-4 text-[#10284B] shrink-0" />
+                Application Review & Fee Payment
               </p>
-              <p className="mt-1 text-blue-800 leading-relaxed">
-                After submission, admissions staff will verify your uploaded documents and qualifications.
-                The ₹500 registration fee payment step will be unlocked only after an authorized staff member approves your documents.
+              <p className="mt-1 text-slate-600 leading-relaxed">
+                Please verify that your details and uploaded documents are accurate. On the next step, you will complete the ₹500 fixed registration fee. Your application will then be confirmed and submitted for official processing.
               </p>
             </div>
 
@@ -252,7 +246,7 @@ export default function ReviewApplication() {
                   className="mt-0.5 h-4 w-4 rounded border-slate-300 text-brand-800 focus:ring-brand-500"
                 />
                 <span className="text-xs text-slate-600 leading-relaxed">
-                  I declare that all details entered above are correct to the best of my knowledge. I understand that my documents will be reviewed by staff before fee payment is enabled.
+                  I declare that all details entered above are correct to the best of my knowledge. I confirm I am ready to complete the ₹500 admission registration fee payment.
                 </span>
               </label>
             </div>
@@ -268,7 +262,7 @@ export default function ReviewApplication() {
             <FormActions
               backPath="/admission/documents"
               backLabel="Back"
-              nextLabel="Submit for Document Review"
+              nextLabel="Proceed to Payment (₹500)"
               onNext={handleSubmit}
               isSubmitting={isSubmitting}
             />

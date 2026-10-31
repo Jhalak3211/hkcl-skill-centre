@@ -16,10 +16,37 @@ export default function StaffAcceptInvite() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
+  const [invitationInfo, setInvitationInfo] = useState(null);
+  const [validatingToken, setValidatingToken] = useState(false);
+
   useEffect(() => {
     if (!token) {
       setError('Invitation token is missing from this link. Please check the link in your email.');
+      return;
     }
+
+    let isMounted = true;
+    setValidatingToken(true);
+    fetch(`/api/admin/accept-invite?token=${encodeURIComponent(token)}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!isMounted) return;
+        if (data.success && data.staff) {
+          setInvitationInfo(data.staff);
+        } else if (data.error) {
+          setError(data.error);
+        }
+      })
+      .catch(() => {
+        // Fallback on network error: allow user to attempt submitting
+      })
+      .finally(() => {
+        if (isMounted) setValidatingToken(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, [token]);
 
   const handleSubmit = async (e) => {
@@ -119,9 +146,17 @@ export default function StaffAcceptInvite() {
                   <div className="mb-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs leading-relaxed">
                     <p className="font-semibold text-amber-950 flex items-center gap-1.5 mb-1 text-sm">
                       <ShieldCheck className="h-4 w-4 text-amber-600" />
-                      Welcome to HKCL Skill Centre!
+                      {invitationInfo ? `Welcome, ${invitationInfo.name}!` : 'Welcome to HKCL Skill Centre!'}
                     </p>
-                    Please choose a strong password to activate your staff portal account. Once activated, you can log in anytime with your registered Gmail address.
+                    {invitationInfo ? (
+                      <p>
+                        You have been invited as <strong>{invitationInfo.designation}</strong> ({invitationInfo.email}). Please choose a password of at least 6 characters to complete your activation.
+                      </p>
+                    ) : (
+                      <p>
+                        Please choose a strong password to activate your staff portal account. Once activated, you can log in anytime with your registered Gmail address.
+                      </p>
+                    )}
                   </div>
 
                   {error && (

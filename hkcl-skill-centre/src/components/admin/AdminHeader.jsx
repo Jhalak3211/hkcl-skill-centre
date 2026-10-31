@@ -39,8 +39,7 @@ export default function AdminHeader() {
                   <span className="font-bold text-sm sm:text-base tracking-tight text-white block">
                     HKCL Skill Centre
                   </span>
-                  <span className="inline-flex items-center gap-1 rounded bg-red-500/20 border border-red-500/40 px-2 py-0.5 text-[10px] font-mono font-bold uppercase tracking-wider text-red-300">
-                    <ShieldAlert className="h-3 w-3" />
+                  <span className="inline-flex items-center rounded-md bg-brand-800/80 px-2 py-0.5 text-[11px] font-medium text-brand-200">
                     Admin Portal
                   </span>
                 </div>
